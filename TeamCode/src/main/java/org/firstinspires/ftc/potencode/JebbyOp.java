@@ -10,13 +10,15 @@ import org.firstinspires.ftc.robotcore.external.Const;
 public class JebbyOp extends OpMode {
     private Jeb jeb;
 
-    private ButtonState clawClosed = new ButtonState();
+    private ButtonState rightBumperToggle;
     private int targetArmPosition;
 
     private ButtonState FODOn = new ButtonState();
     
     @Override
     public void init() {
+        rightBumperToggle = new ButtonState();
+
         jeb = new Jeb(hardwareMap, telemetry);
         jeb.initiate();
     }
@@ -61,8 +63,8 @@ public class JebbyOp extends OpMode {
 
         /// claw
 
-        clawClosed.update(gamepad2.right_bumper);
-        jeb.clawServo.setPosition(clawClosed.buttonState ? Constants.CLAW_MAX : Constants.CLAW_MIN);
+        rightBumperToggle.update(gamepad2.right_bumper);
+        jeb.clawServo.setPosition(rightBumperToggle.buttonState ? Constants.CLAW_MAX : Constants.CLAW_MIN);
 
     }
 
