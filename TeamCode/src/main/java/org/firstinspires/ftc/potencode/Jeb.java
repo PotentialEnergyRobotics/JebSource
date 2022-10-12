@@ -93,7 +93,7 @@ public class Jeb {
         armMotorB.setPower(power);
     }
 
-    public void driveUnits(double distanceX, double distanceY, int velocity) { // cm, cm, m/s
+    public void driveCentimeters(double distanceX, double distanceY, int velocity) { // cm, cm, m/s
         // todo
         return;
     }
