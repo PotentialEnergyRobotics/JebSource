@@ -105,4 +105,10 @@ public class Jeb {
         backMotor.setPower(powerX * Math.sin(angle) + powerY * Math.cos(angle) - turnPower);
         rightMotor.setPower(powerX * Math.cos(angle) + powerY * Math.sin(angle) - turnPower);
     }
+    public void drivePower(double powerX, double powerY, double turnPower) {
+        frontMotor.setPower(powerX + turnPower);
+        leftMotor.setPower(powerY + turnPower);
+        backMotor.setPower(powerX - turnPower);
+        rightMotor.setPower(powerY - turnPower);
+    }
 }

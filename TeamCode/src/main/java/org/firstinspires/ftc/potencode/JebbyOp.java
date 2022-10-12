@@ -12,6 +12,8 @@ public class JebbyOp extends OpMode {
 
     private ButtonState clawClosed = new ButtonState();
     private int targetArmPosition;
+
+    private ButtonState FODOn = new ButtonState();
     
     @Override
     public void init() {
@@ -24,8 +26,13 @@ public class JebbyOp extends OpMode {
 
         /// drive
 
-        jeb.drivePowerFOD(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
-
+        FODOn.update(gamepad1.back);
+        telemetry.addData("FOD:", FODOn);
+        if (FODOn.buttonState) {
+            jeb.drivePowerFOD(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+        } else {
+            jeb.drivePower(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+        }
         /// arm
 
         // todo
