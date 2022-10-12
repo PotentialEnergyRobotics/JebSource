@@ -60,7 +60,7 @@ public class JebbyOp extends OpMode {
         }
         if (gamepad2.left_stick_y != 0) { // if arm is moving (todo add limit switch)
             targetArmPosition = 0;
-            jeb.setArmPower(gamepad2.left_stick_x * armSpeedModifier);
+            jeb.setArmPower(gamepad2.left_stick_y * armSpeedModifier);
         }
         else { // if arm is not moving
             // do not set a new position if it's already being held at the target
