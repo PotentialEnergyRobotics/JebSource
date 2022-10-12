@@ -13,6 +13,8 @@ public class JebbyOp extends OpMode {
     private ButtonState rightBumperToggle;
     private int targetArmPosition;
 
+    private double armSpeedModifier;
+
     private ButtonState FODOn = new ButtonState();
     
     @Override
@@ -49,10 +51,16 @@ public class JebbyOp extends OpMode {
         } else if (gamepad2.left_stick_y == 0 && targetArmPosition == 0) { // if arm is not moving and arm just moved hold arm at position
             targetArmPosition = (jeb.armMotorA.getCurrentPosition() + jeb.armMotorB.getCurrentPosition()) / 2;
         }
-
+        if (gamepad2.right_trigger > 0) {
+            armSpeedModifier = 1;
+        } else if (gamepad2.left_trigger > 0) {
+            armSpeedModifier = 0.2;
+        } else {
+            armSpeedModifier = 0.5;
+        }
         if (gamepad2.left_stick_y != 0) { // if arm is moving (todo add limit switch)
             targetArmPosition = 0;
-            jeb.setArmPower(gamepad2.left_stick_x);
+            jeb.setArmPower(gamepad2.left_stick_x * armSpeedModifier);
         }
         else { // if arm is not moving
             // do not set a new position if it's already being held at the target
