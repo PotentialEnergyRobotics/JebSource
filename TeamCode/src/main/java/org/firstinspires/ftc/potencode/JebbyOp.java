@@ -31,7 +31,7 @@ public class JebbyOp extends OpMode {
         /// drive
 
         FODOn.update(gamepad1.back);
-        telemetry.addData("FOD:", FODOn);
+        telemetry.addData("FOD:", FODOn.buttonState);
         if (FODOn.buttonState) {
             jeb.drivePowerFOD(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
         } else {
