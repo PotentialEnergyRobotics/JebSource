@@ -58,6 +58,7 @@ public class JebbyOp extends OpMode {
         } else {
             armSpeedModifier = 0.5;
         }
+        telemetry.addData("ArmSpeed", armSpeedModifier);
         if (gamepad2.left_stick_y != 0) { // if arm is moving (todo add limit switch)
             targetArmPosition = 0;
             jeb.setArmPower(gamepad2.left_stick_y * armSpeedModifier);
