@@ -5,10 +5,15 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.potencode.utils.Consts;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
 public class Jeb {
     private HardwareMap hardwareMap;
@@ -82,8 +87,8 @@ public class Jeb {
         armMotorB.setTargetPosition(ticks);
         armMotorA.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         armMotorB.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        armMotorA.setVelocity(Constants.ARM_VEL);
-        armMotorB.setVelocity(Constants.ARM_VEL);
+        armMotorA.setVelocity(Consts.ARM_TPS);
+        armMotorB.setVelocity(Consts.ARM_TPS);
     }
 
     public void setArmPower(double power) {
@@ -110,5 +115,31 @@ public class Jeb {
         leftMotor.setPower(powerY + turnPower);
         backMotor.setPower(powerX - turnPower);
         rightMotor.setPower(powerY - turnPower);
+    }
+
+    public VuforiaLocalizer initVuforia(CameraName ...webcams) {
+        /*
+         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
+         */
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
+
+        parameters.vuforiaLicenseKey = Consts.VUFORIA_KEY;
+
+        // Indicate that we wish to be able to switch cameras.
+        parameters.cameraName = ClassFactory.getInstance().getCameraManager().nameForSwitchableCamera(webcams);
+
+        //  Instantiate the Vuforia engine
+        return ClassFactory.getInstance().createVuforia(parameters);
+    }
+
+    public TFObjectDetector initTfod(VuforiaLocalizer vulo) {
+        // same as vulo but for tfod
+        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
+                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
+        tfodParameters.minResultConfidence = 0.75f;
+        tfodParameters.isModelTensorFlow2 = true;
+        tfodParameters.inputSize = 600;
+        return ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vulo);
     }
 }
