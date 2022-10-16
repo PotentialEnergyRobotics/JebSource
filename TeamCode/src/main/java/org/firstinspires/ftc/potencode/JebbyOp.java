@@ -14,6 +14,7 @@ public class JebbyOp extends OpMode {
     private int targetArmPosition;
 
     private double armSpeedModifier;
+    private double driveSpeedModifier;
 
     private ButtonState FODOn = new ButtonState();
     
@@ -28,14 +29,24 @@ public class JebbyOp extends OpMode {
     @Override
     public void loop() {
 
+        /// drie speed
+        if (gamepad1.right_trigger > 0) {
+            driveSpeedModifier = 1;
+        } else if (gamepad1.left_trigger > 0) {
+            driveSpeedModifier = 0.2;
+        } else {
+            driveSpeedModifier = 0.5;
+        }
+        telemetry.addData("DriveSpeed", armSpeedModifier);
+
         /// drive
 
         FODOn.update(gamepad1.back);
         telemetry.addData("FOD:", FODOn.buttonState);
         if (FODOn.buttonState) {
-            jeb.drivePowerFOD(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+            jeb.drivePowerFOD(gamepad1.left_stick_x * driveSpeedModifier, gamepad1.left_stick_y * driveSpeedModifier, gamepad1.right_stick_x * driveSpeedModifier);
         } else {
-            jeb.drivePower(gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
+            jeb.drivePower(gamepad1.left_stick_x * driveSpeedModifier, gamepad1.left_stick_y * driveSpeedModifier, gamepad1.right_stick_x * driveSpeedModifier);
         }
         /// arm
 
@@ -73,6 +84,7 @@ public class JebbyOp extends OpMode {
         /// claw
 
         rightBumperToggle.update(gamepad2.right_bumper);
+        telemetry.addData("ClawOpened",rightBumperToggle.buttonState);
         jeb.clawServo.setPosition(rightBumperToggle.buttonState ? Constants.CLAW_MAX : Constants.CLAW_MIN);
 
     }
