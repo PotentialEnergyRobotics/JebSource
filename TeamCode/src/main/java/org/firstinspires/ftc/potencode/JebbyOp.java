@@ -4,8 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
-import org.checkerframework.checker.signedness.qual.Constant;
-import org.firstinspires.ftc.robotcore.external.Const;
+import org.firstinspires.ftc.potencode.utils.ButtonState;
+import org.firstinspires.ftc.potencode.utils.Consts;
 
 @TeleOp(name="JebbyOp")
 public class JebbyOp extends OpMode {
@@ -36,8 +36,8 @@ public class JebbyOp extends OpMode {
         backButtonToggle.update(gamepad1.back);
         telemetry.addData("FOD", backButtonToggle.buttonState);
 
-        moveSpeedModifier = Range.clip(0, 1, Constants.DEFAULT_ARM_SPEED + gamepad2.left_trigger / 2) +
-                Range.clip(0, 1, Constants.DEFAULT_ARM_SPEED - gamepad2.right_trigger / 2);
+        moveSpeedModifier = Range.clip(0, 1, Consts.DEFAULT_ARM_SPEED + gamepad2.left_trigger / 2) +
+                Range.clip(0, 1, Consts.DEFAULT_ARM_SPEED - gamepad2.right_trigger / 2);
         telemetry.addData("Move speed modifier", moveSpeedModifier);
 
         if (backButtonToggle.buttonState) {
@@ -61,8 +61,8 @@ public class JebbyOp extends OpMode {
             targetArmPosition = (jeb.armMotorA.getCurrentPosition() + jeb.armMotorB.getCurrentPosition()) / 2;
         }
 
-        armSpeedModifier = Range.clip(0, 1, Constants.DEFAULT_ARM_SPEED + gamepad2.left_trigger / 2) +
-            Range.clip(0, 1, Constants.DEFAULT_ARM_SPEED - gamepad2.right_trigger / 2);
+        armSpeedModifier = Range.clip(0, 1, Consts.DEFAULT_ARM_SPEED + gamepad2.left_trigger / 2) +
+            Range.clip(0, 1, Consts.DEFAULT_ARM_SPEED - gamepad2.right_trigger / 2);
         telemetry.addData("Arm speed modifier", moveSpeedModifier);
 
         if (gamepad2.left_stick_y != 0) { // if arm is moving (todo add limit switch)
@@ -79,7 +79,7 @@ public class JebbyOp extends OpMode {
         /// claw
 
         rightBumperToggle.update(gamepad2.right_bumper);
-        jeb.clawServo.setPosition(rightBumperToggle.buttonState ? Constants.CLAW_MAX : Constants.CLAW_MIN);
+        jeb.clawServo.setPosition(rightBumperToggle.buttonState ? Consts.CLAW_MAX : Consts.CLAW_MIN);
     }
 
 
