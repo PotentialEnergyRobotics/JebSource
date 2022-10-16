@@ -9,7 +9,6 @@ import org.firstinspires.ftc.potencode.utils.Consts;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -88,8 +87,8 @@ public class Jeb {
         armMotorB.setTargetPosition(ticks);
         armMotorA.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         armMotorB.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        armMotorA.setVelocity(Consts.ARM_VEL);
-        armMotorB.setVelocity(Consts.ARM_VEL);
+        armMotorA.setVelocity(Consts.ARM_TPS);
+        armMotorB.setVelocity(Consts.ARM_TPS);
     }
 
     public void setArmPower(double power) {
@@ -140,7 +139,7 @@ public class Jeb {
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
         tfodParameters.minResultConfidence = 0.75f;
         tfodParameters.isModelTensorFlow2 = true;
-        tfodParameters.inputSize = 300;
+        tfodParameters.inputSize = 600;
         return ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vulo);
     }
 }

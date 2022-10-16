@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.potencode.utils.ButtonState;
 import org.firstinspires.ftc.potencode.utils.Consts;
+import org.firstinspires.ftc.robotcore.external.Const;
 
 @TeleOp(name="JebbyOp")
 public class JebbyOp extends OpMode {
@@ -17,7 +18,7 @@ public class JebbyOp extends OpMode {
     private int targetArmPosition;
 
     private double armSpeedModifier;
-    private double moveSpeedModifier;
+    private double driveSpeedModifier;
 
     @Override
     public void init() {
@@ -36,14 +37,14 @@ public class JebbyOp extends OpMode {
         backButtonToggle.update(gamepad1.back);
         telemetry.addData("FOD", backButtonToggle.buttonState);
 
-        moveSpeedModifier = Range.clip(0, 1, Consts.DEFAULT_ARM_SPEED + gamepad2.left_trigger / 2) +
-                Range.clip(0, 1, Consts.DEFAULT_ARM_SPEED - gamepad2.right_trigger / 2);
-        telemetry.addData("Move speed modifier", moveSpeedModifier);
+        driveSpeedModifier = Consts.DEFAULT_DRIVE_POWER + gamepad1.left_trigger * (1 - Consts.DEFAULT_DRIVE_POWER) - gamepad1.right_trigger * Consts.DEFAULT_DRIVE_POWER;
+        armSpeedModifier = Range.clip(driveSpeedModifier,  Consts.MIN_DRIVE_POWER, 1);
+        telemetry.addData("Move speed modifier", driveSpeedModifier);
 
         if (backButtonToggle.buttonState) {
-            jeb.drivePowerFOD(gamepad1.left_stick_x * moveSpeedModifier, gamepad1.left_stick_y * moveSpeedModifier, gamepad1.right_stick_x * moveSpeedModifier);
+            jeb.drivePowerFOD(gamepad1.left_stick_x * driveSpeedModifier, gamepad1.left_stick_y * driveSpeedModifier, gamepad1.right_stick_x * driveSpeedModifier);
         } else {
-            jeb.drivePower(gamepad1.left_stick_x * moveSpeedModifier, gamepad1.left_stick_y * moveSpeedModifier, gamepad1.right_stick_x * moveSpeedModifier);
+            jeb.drivePower(gamepad1.left_stick_x * driveSpeedModifier, gamepad1.left_stick_y * driveSpeedModifier, gamepad1.right_stick_x * driveSpeedModifier);
         }
 
         /// arm
@@ -61,9 +62,9 @@ public class JebbyOp extends OpMode {
             targetArmPosition = (jeb.armMotorA.getCurrentPosition() + jeb.armMotorB.getCurrentPosition()) / 2;
         }
 
-        armSpeedModifier = Range.clip(0, 1, Consts.DEFAULT_ARM_SPEED + gamepad2.left_trigger / 2) +
-            Range.clip(0, 1, Consts.DEFAULT_ARM_SPEED - gamepad2.right_trigger / 2);
-        telemetry.addData("Arm speed modifier", moveSpeedModifier);
+        armSpeedModifier = Consts.DEFAULT_ARM_POWER + gamepad2.left_trigger * (1 - Consts.DEFAULT_ARM_POWER) - gamepad2.right_trigger * Consts.DEFAULT_ARM_POWER;
+        armSpeedModifier = Range.clip(armSpeedModifier, Consts.MIN_ARM_POWER, 1);
+        telemetry.addData("Arm speed modifier", armSpeedModifier);
 
         if (gamepad2.left_stick_y != 0) { // if arm is moving (todo add limit switch)
             targetArmPosition = 0;
@@ -79,7 +80,7 @@ public class JebbyOp extends OpMode {
         /// claw
 
         rightBumperToggle.update(gamepad2.right_bumper);
-        jeb.clawServo.setPosition(rightBumperToggle.buttonState ? Consts.CLAW_MAX : Consts.CLAW_MIN);
+        jeb.clawServo.setPosition(rightBumperToggle.buttonState ? Consts.CLAW_MAX_POS : Consts.CLAW_MIN_POS);
     }
 
 

@@ -26,7 +26,8 @@ public class TensorflowGym extends OpMode {
     private VuforiaLocalizer vulo;
     private TFObjectDetector tfod;
 
-    private WebcamName[] webcams;
+    private WebcamName cam_front;
+    private WebcamName cam_back;
     private SwitchableCamera switchableCamera;
 
     private boolean oldLeftBumper;
@@ -36,31 +37,21 @@ public class TensorflowGym extends OpMode {
     public void init() {
         jeb = new Jeb(hardwareMap, telemetry);
 
-        webcams[0] = hardwareMap.get(WebcamName.class, "cam_front");
-        webcams[1] = hardwareMap.get(WebcamName.class, "cam_back");
-        vulo = jeb.initVuforia(webcams);
-
+        cam_front = hardwareMap.get(WebcamName.class, "cam_front");
+        cam_back = hardwareMap.get(WebcamName.class, "cam_back");
+        vulo = jeb.initVuforia(cam_front, cam_back);
         switchableCamera = (SwitchableCamera) vulo.getCamera();
-        switchableCamera.setActiveCamera(webcams[0]);
+        switchableCamera.setActiveCamera(cam_front);
 
         tfod = jeb.initTfod(vulo);
-
-        // Use loadModelFromAsset() if the TF Model is built in as an asset by Android Studio
-        // Use loadModelFromFile() if you have downloaded a custom team model to the Robot Controller's FLASH.
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, TFOD_LABELS);
-        // tfod.loadModelFromFile(TFOD_MODEL_FILE, LABELS);
 
-        if (tfod != null) {
-            tfod.activate();
+        telemetry.addData("Status", "starting tfod...");
 
-            // The TensorFlow software will scale the input images from the camera to a lower resolution.
-            // This can result in lower detection accuracy at longer distances (> 55cm or 22").
-            // If your target is at distance greater than 50 cm (20") you can increase the magnification value
-            // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
-            // should be set to the value of the images used to create the TensorFlow Object Detection model
-            // (typically 16/9).
-            tfod.setZoom(1.0, 16.0/9.0);
-        }
+        tfod.activate();
+        tfod.setZoom(1.0, 16.0/9.0);
+
+        telemetry.addData("Status", "prepared to annihilate");
     }
 
     @Override
@@ -92,21 +83,21 @@ public class TensorflowGym extends OpMode {
         boolean newLeftBumper = gamepad1.left_bumper;
         boolean newRightBumper = gamepad1.right_bumper;
         if (newLeftBumper && !oldLeftBumper) {
-            switchableCamera.setActiveCamera(webcams[0]);
+            switchableCamera.setActiveCamera(cam_front);
             telemetry.addLine("now using front cam");
         } else if (newRightBumper && !oldRightBumper) {
-            switchableCamera.setActiveCamera(webcams[1]);
+            switchableCamera.setActiveCamera(cam_back);
             telemetry.addLine("now using back cam");
         }
         oldLeftBumper = newLeftBumper;
         oldRightBumper = newRightBumper;
 
-        if (switchableCamera.getActiveCamera().equals(webcams[0])) {
-            telemetry.addData("activeCamera", "Webcam 1");
-            telemetry.addData("Press RightBumper", "to switch to Webcam 2");
+        if (switchableCamera.getActiveCamera().equals(cam_front)) {
+            telemetry.addData("activeCamera", "Webcam front");
+            telemetry.addData("Press RightBumper", "to switch to Webcam back");
         } else {
-            telemetry.addData("activeCamera", "Webcam 2");
-            telemetry.addData("Press LeftBumper", "to switch to Webcam 1");
+            telemetry.addData("activeCamera", "Webcam back");
+            telemetry.addData("Press LeftBumper", "to switch to Webcam front");
         }
     }
 }
