@@ -2,7 +2,6 @@ package org.firstinspires.ftc.potencode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -29,15 +28,14 @@ public class Jeb {
     public DcMotorEx leftMotor;
     public DcMotorEx backMotor;
 
-    public DcMotorEx armMotorA;
+    public DcMotorEx armMotor;
     public DcMotorEx armMotorB;
 
     public Servo clawServo;
 
     ///
 
-    public float angle_r;
-    public float angle_d;
+    private float angle;
 
     private boolean clawOpen;
 
@@ -64,20 +62,18 @@ public class Jeb {
         leftMotor = hardwareMap.get(DcMotorEx.class, "left");
         backMotor = hardwareMap.get(DcMotorEx.class, "back");
 
-        //armMotorA = hardwareMap.get(DcMotorEx.class, "armA"); // motor 0
-        //armMotorB = hardwareMap.get(DcMotorEx.class, "armB"); // motor 1
+        armMotor = hardwareMap.get(DcMotorEx.class, "arm"); // motor 0
 
-        //clawServo = hardwareMap.get(Servo.class, "claw"); // servo 0
+        clawServo = hardwareMap.get(Servo.class, "claw"); // servo 0
 
         frontMotor.setDirection(DcMotorEx.Direction.FORWARD);
         backMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        leftMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        rightMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        leftMotor.setDirection(DcMotorEx.Direction.FORWARD);
+        rightMotor.setDirection(DcMotorEx.Direction.REVERSE);
     }
 
     public void updateAngle() {
-        angle_r = IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.RADIANS).firstAngle;
-        angle_d = IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES).firstAngle;
+        angle = IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES).thirdAngle;
     }
 
     public void rotateDegrees(double degrees) { // degrees not radians!!
@@ -85,44 +81,34 @@ public class Jeb {
         return;
     }
 
-    /*public void holdArm(int ticks) { // todo convert to degrees!!
-        armMotorA.setTargetPosition(ticks);
-        armMotorB.setTargetPosition(ticks);
-        armMotorA.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        armMotorB.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        armMotorA.setVelocity(Consts.ARM_TPS);
-        armMotorB.setVelocity(Consts.ARM_TPS);
+    public void holdArm(int ticks) { // todo convert to degrees!!
+        armMotor.setTargetPosition(ticks);
+        armMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        armMotor.setVelocity(Consts.ARM_TPS);
     }
 
     public void setArmPower(double power) {
-        armMotorA.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        armMotorB.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        armMotorA.setPower(power);
-        armMotorB.setPower(power);
-    }*/
+        armMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        armMotor.setPower(power);
+    }
 
     public void driveCentimeters(double distanceX, double distanceY, int velocity) { // cm, cm, m/s
         // todo
         return;
     }
 
-    public void FOD(double powerX, double powerY) {
+    public void drivePowerFOD(double powerX, double powerY, double turnPower) {
         updateAngle();
-        JebbyOp.XDrivePower = powerX * Math.cos(angle_r) - powerY * Math.sin(angle_r);
-        JebbyOp.YDrivePower = powerX * Math.sin(angle_r) + powerY * Math.cos(angle_r);
+        frontMotor.setPower(powerX * Math.sin(angle) + powerY * Math.cos(angle) + turnPower);
+        leftMotor.setPower(powerX * Math.cos(angle) + powerY * Math.sin(angle) + turnPower);
+        backMotor.setPower(powerX * Math.sin(angle) + powerY * Math.cos(angle) - turnPower);
+        rightMotor.setPower(powerX * Math.cos(angle) + powerY * Math.sin(angle) - turnPower);
     }
-    public void driveVelocity(double powerX, double powerY, double turnPower) {
-        frontMotor.setVelocity((powerX + turnPower)*Consts.TICKS_PER_POWER);
-        leftMotor.setVelocity((powerY - turnPower)*Consts.TICKS_PER_POWER);
-        backMotor.setVelocity((powerX - turnPower)*Consts.TICKS_PER_POWER);
-        rightMotor.setVelocity((powerY + turnPower)*Consts.TICKS_PER_POWER);
-    }
-
     public void drivePower(double powerX, double powerY, double turnPower) {
         frontMotor.setPower(powerX + turnPower);
-        leftMotor.setPower(powerY - turnPower);
+        leftMotor.setPower(powerY + turnPower);
         backMotor.setPower(powerX - turnPower);
-        rightMotor.setPower(powerY + turnPower);
+        rightMotor.setPower(powerY - turnPower);
     }
 
     public VuforiaLocalizer initVuforia(CameraName ...webcams) {
