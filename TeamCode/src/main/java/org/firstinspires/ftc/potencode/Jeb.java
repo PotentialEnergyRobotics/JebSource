@@ -2,6 +2,7 @@ package org.firstinspires.ftc.potencode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -35,7 +36,8 @@ public class Jeb {
 
     ///
 
-    private float angle;
+    public float angle_r;
+    public float angle_d;
 
     private boolean clawOpen;
 
@@ -62,19 +64,20 @@ public class Jeb {
         leftMotor = hardwareMap.get(DcMotorEx.class, "left");
         backMotor = hardwareMap.get(DcMotorEx.class, "back");
 
-        armMotorA = hardwareMap.get(DcMotorEx.class, "armA"); // motor 0
-        armMotorB = hardwareMap.get(DcMotorEx.class, "armB"); // motor 1
+        //armMotorA = hardwareMap.get(DcMotorEx.class, "armA"); // motor 0
+        //armMotorB = hardwareMap.get(DcMotorEx.class, "armB"); // motor 1
 
-        clawServo = hardwareMap.get(Servo.class, "claw"); // servo 0
+        //clawServo = hardwareMap.get(Servo.class, "claw"); // servo 0
 
         frontMotor.setDirection(DcMotorEx.Direction.FORWARD);
         backMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        leftMotor.setDirection(DcMotorEx.Direction.FORWARD);
-        rightMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        leftMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        rightMotor.setDirection(DcMotorEx.Direction.FORWARD);
     }
 
     public void updateAngle() {
-        angle = IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES).thirdAngle;
+        angle_r = IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.RADIANS).firstAngle;
+        angle_d = IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES).firstAngle;
     }
 
     public void rotateDegrees(double degrees) { // degrees not radians!!
@@ -82,7 +85,7 @@ public class Jeb {
         return;
     }
 
-    public void holdArm(int ticks) { // todo convert to degrees!!
+    /*public void holdArm(int ticks) { // todo convert to degrees!!
         armMotorA.setTargetPosition(ticks);
         armMotorB.setTargetPosition(ticks);
         armMotorA.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
@@ -96,25 +99,30 @@ public class Jeb {
         armMotorB.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         armMotorA.setPower(power);
         armMotorB.setPower(power);
-    }
+    }*/
 
     public void driveCentimeters(double distanceX, double distanceY, int velocity) { // cm, cm, m/s
         // todo
         return;
     }
 
-    public void drivePowerFOD(double powerX, double powerY, double turnPower) {
+    public void FOD(double powerX, double powerY) {
         updateAngle();
-        frontMotor.setPower(powerX * Math.sin(angle) + powerY * Math.cos(angle) + turnPower);
-        leftMotor.setPower(powerX * Math.cos(angle) + powerY * Math.sin(angle) + turnPower);
-        backMotor.setPower(powerX * Math.sin(angle) + powerY * Math.cos(angle) - turnPower);
-        rightMotor.setPower(powerX * Math.cos(angle) + powerY * Math.sin(angle) - turnPower);
+        JebbyOp.XDrivePower = powerX * Math.cos(angle_r) - powerY * Math.sin(angle_r);
+        JebbyOp.YDrivePower = powerX * Math.sin(angle_r) + powerY * Math.cos(angle_r);
     }
+    public void driveVelocity(double powerX, double powerY, double turnPower) {
+        frontMotor.setVelocity((powerX + turnPower)*Consts.TICKS_PER_POWER);
+        leftMotor.setVelocity((powerY - turnPower)*Consts.TICKS_PER_POWER);
+        backMotor.setVelocity((powerX - turnPower)*Consts.TICKS_PER_POWER);
+        rightMotor.setVelocity((powerY + turnPower)*Consts.TICKS_PER_POWER);
+    }
+
     public void drivePower(double powerX, double powerY, double turnPower) {
         frontMotor.setPower(powerX + turnPower);
-        leftMotor.setPower(powerY + turnPower);
+        leftMotor.setPower(powerY - turnPower);
         backMotor.setPower(powerX - turnPower);
-        rightMotor.setPower(powerY - turnPower);
+        rightMotor.setPower(powerY + turnPower);
     }
 
     public VuforiaLocalizer initVuforia(CameraName ...webcams) {

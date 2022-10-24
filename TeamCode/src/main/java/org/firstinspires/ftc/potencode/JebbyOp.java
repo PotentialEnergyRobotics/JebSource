@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.checkerframework.checker.signedness.qual.Constant;
+import org.firstinspires.ftc.potencode.utils.ButtonState;
+import org.firstinspires.ftc.potencode.utils.Consts;
 import org.firstinspires.ftc.robotcore.external.Const;
 
 @TeleOp(name="JebbyOp")
@@ -15,6 +17,14 @@ public class JebbyOp extends OpMode {
 
     private double armSpeedModifier;
     private double driveSpeedModifier;
+
+    public static double XDrivePower;
+    public static double YDrivePower;
+    public static double TurnDrivePower;
+
+    private int OCTarget;
+    private boolean OCOn = false;
+    private boolean dpadDown;
 
     private ButtonState FODOn = new ButtonState();
     
@@ -29,7 +39,7 @@ public class JebbyOp extends OpMode {
     @Override
     public void loop() {
 
-        /// drie speed
+        /// drive speed
         if (gamepad1.right_trigger > 0) {
             driveSpeedModifier = 1;
         } else if (gamepad1.left_trigger > 0) {
@@ -42,14 +52,40 @@ public class JebbyOp extends OpMode {
         /// drive
 
         FODOn.update(gamepad1.back);
+        jeb.updateAngle();
         telemetry.addData("FOD:", FODOn.buttonState);
-        if (FODOn.buttonState) {
-            jeb.drivePowerFOD(gamepad1.left_stick_x * driveSpeedModifier, gamepad1.left_stick_y * driveSpeedModifier, gamepad1.right_stick_x * driveSpeedModifier);
-        } else {
-            jeb.drivePower(gamepad1.left_stick_x * driveSpeedModifier, gamepad1.left_stick_y * driveSpeedModifier, gamepad1.right_stick_x * driveSpeedModifier);
-        }
-        /// arm
+        telemetry.addData("Angle:", jeb.angle_d);
+        XDrivePower = gamepad1.left_stick_x * driveSpeedModifier;
+        YDrivePower = gamepad1.left_stick_y * driveSpeedModifier;
+        TurnDrivePower = gamepad1.right_stick_x * driveSpeedModifier;
 
+        /// Work in progress - Orientation Correction
+        /*
+        if (gamepad1.dpad_up || gamepad1.dpad_down || gamepad1.dpad_left || gamepad1.dpad_right) {
+            OCOn = !OCOn;
+            dpadDown = true;
+            if (gamepad1.dpad_up) {
+                OCTarget = 0;
+            }
+            if (gamepad1.dpad_down) {
+                OCTarget = 180;
+            }
+            if (gamepad1.dpad_left) {
+                OCTarget = -90;
+            }
+            if (gamepad1.dpad_right) {
+                OCTarget = 90;
+            }
+        } else if (!gamepad1.dpad_up && !gamepad1.dpad_down && !gamepad1.dpad_left && !gamepad1.dpad_right && dpadDown) {
+            dpadDown = false;
+        } */
+
+        if (FODOn.buttonState) {
+            jeb.FOD(XDrivePower,YDrivePower);
+        }
+        jeb.driveVelocity(XDrivePower, YDrivePower, TurnDrivePower);
+        /// arm
+        /*
         // todo
         if (gamepad2.dpad_down) {
 //            targetArmPosition = Consts.ARM_LEVELS[0];
@@ -85,8 +121,8 @@ public class JebbyOp extends OpMode {
 
         rightBumperToggle.update(gamepad2.right_bumper);
         telemetry.addData("ClawOpened",rightBumperToggle.buttonState);
-        jeb.clawServo.setPosition(rightBumperToggle.buttonState ? Constants.CLAW_MAX : Constants.CLAW_MIN);
-
+        jeb.clawServo.setPosition(rightBumperToggle.buttonState ? Consts.CLAW_MAX_POS : Consts.CLAW_MIN_POS);
+        */
     }
 
 
