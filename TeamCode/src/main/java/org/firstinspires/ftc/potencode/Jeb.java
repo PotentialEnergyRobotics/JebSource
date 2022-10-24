@@ -28,7 +28,7 @@ public class Jeb {
     public DcMotorEx leftMotor;
     public DcMotorEx backMotor;
 
-    public DcMotorEx armMotorA;
+    public DcMotorEx armMotor;
     public DcMotorEx armMotorB;
 
     public Servo clawServo;
@@ -62,8 +62,7 @@ public class Jeb {
         leftMotor = hardwareMap.get(DcMotorEx.class, "left");
         backMotor = hardwareMap.get(DcMotorEx.class, "back");
 
-        armMotorA = hardwareMap.get(DcMotorEx.class, "armA"); // motor 0
-        armMotorB = hardwareMap.get(DcMotorEx.class, "armB"); // motor 1
+        armMotor = hardwareMap.get(DcMotorEx.class, "arm"); // motor 0
 
         clawServo = hardwareMap.get(Servo.class, "claw"); // servo 0
 
@@ -83,19 +82,14 @@ public class Jeb {
     }
 
     public void holdArm(int ticks) { // todo convert to degrees!!
-        armMotorA.setTargetPosition(ticks);
-        armMotorB.setTargetPosition(ticks);
-        armMotorA.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        armMotorB.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        armMotorA.setVelocity(Consts.ARM_TPS);
-        armMotorB.setVelocity(Consts.ARM_TPS);
+        armMotor.setTargetPosition(ticks);
+        armMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        armMotor.setVelocity(Consts.ARM_TPS);
     }
 
     public void setArmPower(double power) {
-        armMotorA.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        armMotorB.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        armMotorA.setPower(power);
-        armMotorB.setPower(power);
+        armMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        armMotor.setPower(power);
     }
 
     public void driveCentimeters(double distanceX, double distanceY, int velocity) { // cm, cm, m/s

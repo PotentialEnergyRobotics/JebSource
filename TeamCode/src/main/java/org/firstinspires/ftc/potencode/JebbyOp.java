@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.potencode.utils.ButtonState;
 import org.firstinspires.ftc.potencode.utils.Consts;
-import org.firstinspires.ftc.robotcore.external.Const;
 
 @TeleOp(name="JebbyOp")
 public class JebbyOp extends OpMode {
@@ -38,7 +37,7 @@ public class JebbyOp extends OpMode {
         telemetry.addData("FOD", backButtonToggle.buttonState);
 
         driveSpeedModifier = Consts.DEFAULT_DRIVE_POWER + gamepad1.left_trigger * (1 - Consts.DEFAULT_DRIVE_POWER) - gamepad1.right_trigger * Consts.DEFAULT_DRIVE_POWER;
-        armSpeedModifier = Range.clip(driveSpeedModifier,  Consts.MIN_DRIVE_POWER, 1);
+        driveSpeedModifier = Range.clip(driveSpeedModifier,  Consts.MIN_DRIVE_POWER, 1);
         telemetry.addData("Move speed modifier", driveSpeedModifier);
 
         if (backButtonToggle.buttonState) {
@@ -59,7 +58,7 @@ public class JebbyOp extends OpMode {
         } else if (gamepad2.dpad_up) {
 //            targetArmPosition = Consts.ARM_LEVELS[3];
         } else if (gamepad2.left_stick_y == 0 && targetArmPosition == 0) { // if arm is not moving and arm just moved hold arm at position
-            targetArmPosition = (jeb.armMotorA.getCurrentPosition() + jeb.armMotorB.getCurrentPosition()) / 2;
+            targetArmPosition = (jeb.armMotor.getCurrentPosition() + jeb.armMotorB.getCurrentPosition()) / 2;
         }
 
         armSpeedModifier = Consts.DEFAULT_ARM_POWER + gamepad2.left_trigger * (1 - Consts.DEFAULT_ARM_POWER) - gamepad2.right_trigger * Consts.DEFAULT_ARM_POWER;
@@ -72,7 +71,7 @@ public class JebbyOp extends OpMode {
         }
         else { // if arm is not moving
             // do not set a new position if it's already being held at the target
-            if (targetArmPosition != jeb.armMotorA.getCurrentPosition()) {
+            if (targetArmPosition != jeb.armMotor.getCurrentPosition()) {
                 jeb.holdArm(targetArmPosition);
             }
         }
