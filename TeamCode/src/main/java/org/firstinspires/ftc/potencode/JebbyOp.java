@@ -19,6 +19,10 @@ public class JebbyOp extends OpMode {
     private double armSpeedModifier;
     private double driveSpeedModifier;
 
+    public static double driveX;
+    public static double driveY;
+    public static double driveTurn;
+
     @Override
     public void init() {
         rightBumperToggle = new ButtonState();
@@ -40,11 +44,14 @@ public class JebbyOp extends OpMode {
         driveSpeedModifier = Range.clip(driveSpeedModifier,  Consts.MIN_DRIVE_POWER, 1);
         telemetry.addData("Move speed modifier", driveSpeedModifier);
 
+        driveX = gamepad1.left_stick_x * driveSpeedModifier;
+        driveY = gamepad1.left_stick_y * driveSpeedModifier;
+        driveTurn = gamepad1.right_stick_x * driveSpeedModifier;
+
         if (backButtonToggle.buttonState) {
-            jeb.drivePowerFOD(gamepad1.left_stick_x * driveSpeedModifier, gamepad1.left_stick_y * driveSpeedModifier, gamepad1.right_stick_x * driveSpeedModifier);
-        } else {
-            jeb.drivePower(gamepad1.left_stick_x * driveSpeedModifier, gamepad1.left_stick_y * driveSpeedModifier, gamepad1.right_stick_x * driveSpeedModifier);
+            jeb.FOD(driveX, driveY);
         }
+        jeb.driveVelocity(driveX, driveY, driveTurn);
 
         /// arm
 
@@ -58,7 +65,7 @@ public class JebbyOp extends OpMode {
         } else if (gamepad2.dpad_up) {
 //            targetArmPosition = Consts.ARM_LEVELS[3];
         } else if (gamepad2.left_stick_y == 0 && targetArmPosition == 0) { // if arm is not moving and arm just moved hold arm at position
-            targetArmPosition = (jeb.armMotor.getCurrentPosition() + jeb.armMotorB.getCurrentPosition()) / 2;
+            targetArmPosition = jeb.armMotor.getCurrentPosition();
         }
 
         armSpeedModifier = Consts.DEFAULT_ARM_POWER + gamepad2.left_trigger * (1 - Consts.DEFAULT_ARM_POWER) - gamepad2.right_trigger * Consts.DEFAULT_ARM_POWER;
@@ -67,7 +74,7 @@ public class JebbyOp extends OpMode {
 
         if (gamepad2.left_stick_y != 0) { // if arm is moving (todo add limit switch)
             targetArmPosition = 0;
-            jeb.setArmPower(gamepad2.left_stick_y * armSpeedModifier);
+            jeb.setArmPower(-gamepad2.left_stick_y * armSpeedModifier);
         }
         else { // if arm is not moving
             // do not set a new position if it's already being held at the target
@@ -79,7 +86,8 @@ public class JebbyOp extends OpMode {
         /// claw
 
         rightBumperToggle.update(gamepad2.right_bumper);
-        jeb.clawServo.setPosition(rightBumperToggle.buttonState ? Consts.CLAW_MAX_POS : Consts.CLAW_MIN_POS);
+        telemetry.addData("Claw closed:", rightBumperToggle.buttonState);
+        jeb.clawServo.setPosition(rightBumperToggle.buttonState ? Consts.CLAW_MIN_POS : Consts.CLAW_MAX_POS);
     }
 
 

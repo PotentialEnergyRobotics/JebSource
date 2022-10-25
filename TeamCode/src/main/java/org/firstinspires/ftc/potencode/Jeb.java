@@ -2,6 +2,7 @@ package org.firstinspires.ftc.potencode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -35,7 +36,8 @@ public class Jeb {
 
     ///
 
-    private float angle;
+    private float angle_r;
+    private float angle_d;
 
     private boolean clawOpen;
 
@@ -68,12 +70,13 @@ public class Jeb {
 
         frontMotor.setDirection(DcMotorEx.Direction.FORWARD);
         backMotor.setDirection(DcMotorEx.Direction.REVERSE);
-        leftMotor.setDirection(DcMotorEx.Direction.FORWARD);
-        rightMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        leftMotor.setDirection(DcMotorEx.Direction.REVERSE);
+        rightMotor.setDirection(DcMotorEx.Direction.FORWARD);
     }
 
     public void updateAngle() {
-        angle = IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES).thirdAngle;
+        angle_r = IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.RADIANS).firstAngle;
+        angle_d = IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES).firstAngle;
     }
 
     public void rotateDegrees(double degrees) { // degrees not radians!!
@@ -97,18 +100,22 @@ public class Jeb {
         return;
     }
 
-    public void drivePowerFOD(double powerX, double powerY, double turnPower) {
+    public void FOD(double powerX, double powerY) {
         updateAngle();
-        frontMotor.setPower(powerX * Math.sin(angle) + powerY * Math.cos(angle) + turnPower);
-        leftMotor.setPower(powerX * Math.cos(angle) + powerY * Math.sin(angle) + turnPower);
-        backMotor.setPower(powerX * Math.sin(angle) + powerY * Math.cos(angle) - turnPower);
-        rightMotor.setPower(powerX * Math.cos(angle) + powerY * Math.sin(angle) - turnPower);
+        JebbyOp.driveX = powerX * Math.cos(angle_r) - powerY * Math.sin(angle_r);
+        JebbyOp.driveY = powerX * Math.sin(angle_r) + powerY * Math.cos(angle_r);
     }
     public void drivePower(double powerX, double powerY, double turnPower) {
         frontMotor.setPower(powerX + turnPower);
-        leftMotor.setPower(powerY + turnPower);
+        leftMotor.setPower(powerY - turnPower);
         backMotor.setPower(powerX - turnPower);
-        rightMotor.setPower(powerY - turnPower);
+        rightMotor.setPower(powerY + turnPower);
+    }
+    public void driveVelocity(double powerX, double powerY, double turnPower) {
+        frontMotor.setVelocity((powerX + turnPower) * Consts.TICKS_PER_POWER);
+        leftMotor.setVelocity((powerY - turnPower) * Consts.TICKS_PER_POWER);
+        backMotor.setVelocity((powerX - turnPower) * Consts.TICKS_PER_POWER);
+        rightMotor.setVelocity((powerY + turnPower) * Consts.TICKS_PER_POWER);
     }
 
     public VuforiaLocalizer initVuforia(CameraName ...webcams) {
