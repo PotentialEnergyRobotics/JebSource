@@ -47,7 +47,13 @@ public class JebbyOp extends OpMode {
         driveX = gamepad1.left_stick_x * driveSpeedModifier;
         driveY = gamepad1.left_stick_y * driveSpeedModifier;
         driveTurn = gamepad1.right_stick_x * driveSpeedModifier;
-
+        if (gamepad1.x) {
+            if (Math.abs(driveX) > Math.abs(driveY)) {
+                driveY = 0;
+            } else if (Math.abs(driveY) > Math.abs(driveX)) {
+                driveX = 0;
+            }
+        }
         if (backButtonToggle.buttonState) {
             jeb.FOD(driveX, driveY);
         }
