@@ -38,6 +38,8 @@ public class Jeb {
 
     private float angle_r;
     private float angle_d;
+    private float angle_0 = 0;
+    private float current_angle_r;
 
     private boolean clawOpen;
 
@@ -77,6 +79,13 @@ public class Jeb {
     public void updateAngle() {
         angle_r = IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.RADIANS).firstAngle;
         angle_d = IMU.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZXY, AngleUnit.DEGREES).firstAngle;
+        current_angle_r = angle_r - angle_0;
+        telemetry.addData("current radians:", current_angle_r);
+    }
+
+    public void resetAngle() {
+        angle_0 = angle_r;
+        telemetry.addData("angle 0:", angle_0);
     }
 
     public void rotateDegrees(double degrees) { // degrees not radians!!
@@ -102,8 +111,8 @@ public class Jeb {
 
     public void FOD(double powerX, double powerY) {
         updateAngle();
-        JebbyOp.driveX = powerX * Math.cos(angle_r) - powerY * Math.sin(angle_r);
-        JebbyOp.driveY = powerX * Math.sin(angle_r) + powerY * Math.cos(angle_r);
+        JebbyOp.driveX = powerX * Math.cos(current_angle_r) - powerY * Math.sin(current_angle_r);
+        JebbyOp.driveY = powerX * Math.sin(current_angle_r) + powerY * Math.cos(current_angle_r);
     }
     public void drivePower(double powerX, double powerY, double turnPower) {
         frontMotor.setPower(powerX + turnPower);
