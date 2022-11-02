@@ -4,6 +4,7 @@ repositories {
     flatDir {
         dirs rootProject.file('libs')
     }
+    url ""
 }
 
 dependencies {
