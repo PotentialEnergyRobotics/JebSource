@@ -138,7 +138,8 @@ public class YOLO extends OpMode {
             // TODO: Define this in Consts
             Mat blob_from_image = Dnn.blobFromImage(img, 1 / 255.0, new Size(640, 640), // Here we supply the spatial size that the Convolutional Neural Network expects.
                     new Scalar(new double[]{0.0, 0.0, 0.0}), true, false);
-            blob_from_image = blob_from_image.reshape(1, blob_from_image.size(2));// new int[]{1,3,640,640});
+            blob_from_image.convertTo(blob_from_image, CvType.CV_32F, 1.0/255, -0.5);
+            blob_from_image = blob_from_image.reshape(1, new int[]{1, blob_from_image.cols(), blob_from_image.cols(), 3});// new int[]{1,3,640,640});
             net.setInput(blob_from_image);
 
             // -- the output from network's forward() method will contain a List of OpenCV Mat object, so lets prepare one
