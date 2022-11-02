@@ -22,15 +22,16 @@ public class DriveBasic extends OpMode {
     @Override
     public void start() {
         runtime.reset();
-        jeb.drivePower(0, -Consts.DEFAULT_DRIVE_POWER, 0);
-
     }
 
     @Override
     public void loop() {
         telemetry.addData("runtime", runtime.toString());
-        if (runtime.seconds() > 2) {
-            jeb.drivePower(0, 0, 0);
+        jeb.updateAngle();
+        if (runtime.seconds() > 10) {
+            jeb.gyroDrive(0, 0);
+        } else {
+            jeb.gyroDrive(0, -Consts.DEFAULT_DRIVE_POWER);
         }
     }
 }

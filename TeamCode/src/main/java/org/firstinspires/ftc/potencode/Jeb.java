@@ -127,6 +127,13 @@ public class Jeb {
         rightMotor.setVelocity((powerY + turnPower) * Consts.TICKS_PER_POWER);
     }
 
+    public void gyroDrive(double powerX, double powerY) {
+        frontMotor.setVelocity((powerX) * Consts.TICKS_PER_POWER);
+        leftMotor.setVelocity((powerY - (angle_d * Consts.POWER_PER_P)) * Consts.TICKS_PER_POWER);
+        backMotor.setVelocity((powerX) * Consts.TICKS_PER_POWER);
+        rightMotor.setVelocity((powerY + (angle_d * Consts.POWER_PER_P)) * Consts.TICKS_PER_POWER);
+    }
+
     public VuforiaLocalizer initVuforia(CameraName ...webcams) {
         /*
          * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
