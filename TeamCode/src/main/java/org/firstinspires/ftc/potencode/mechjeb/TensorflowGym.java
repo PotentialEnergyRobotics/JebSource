@@ -39,7 +39,7 @@ public class TensorflowGym extends OpMode {
         telemetry.addData("Status", "starting tfod...");
 
         tfod.activate();
-        tfod.setZoom(1.0, 16.0/9.0);
+//        tfod.setZoom(1.0, 16.0/9.0);
 
         telemetry.addData("Status", "prepared to annihilate");
     }
