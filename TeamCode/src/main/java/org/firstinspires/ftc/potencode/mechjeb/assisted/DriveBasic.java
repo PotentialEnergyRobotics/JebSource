@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.potencode.Jeb;
 import org.firstinspires.ftc.potencode.utils.Consts;
 
-@Autonomous(name = "Drive 2ft")
+@Autonomous(name = "Drive Test")
 public class DriveBasic extends OpMode {
     private Jeb jeb;
 
@@ -21,17 +21,11 @@ public class DriveBasic extends OpMode {
 
     @Override
     public void start() {
-        runtime.reset();
+        jeb.driveCentimeters(0,4,600);
     }
 
     @Override
     public void loop() {
-        telemetry.addData("runtime", runtime.toString());
-        jeb.updateAngle();
-        if (runtime.seconds() > 10) {
-            jeb.gyroDrive(0, 0);
-        } else {
-            jeb.gyroDrive(0, -Consts.DEFAULT_DRIVE_POWER);
-        }
+
     }
 }

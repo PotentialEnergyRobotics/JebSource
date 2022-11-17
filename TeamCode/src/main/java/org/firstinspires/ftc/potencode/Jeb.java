@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.potencode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -29,17 +30,21 @@ public class Jeb {
     public DcMotorEx leftMotor;
     public DcMotorEx backMotor;
 
-    public DcMotorEx armMotor;
-    public DcMotorEx armMotorB;
+    public DcMotorEx armMotorA;
+    //public DcMotorEx armMotorB;
+    public int currentArmAPos;
+    public int currentArmBPos;
 
     public Servo clawServo;
 
     ///
 
-    private float angle_r;
-    private float angle_d;
-    private float angle_0 = 0;
-    private float current_angle_r;
+    private double angle_r;
+    private double angle_d;
+    private double angle_0 = 0;
+    private double current_angle_r;
+
+    private double drive_direction;
 
     private boolean clawOpen;
 
@@ -66,7 +71,8 @@ public class Jeb {
         leftMotor = hardwareMap.get(DcMotorEx.class, "left");
         backMotor = hardwareMap.get(DcMotorEx.class, "back");
 
-        armMotor = hardwareMap.get(DcMotorEx.class, "arm"); // motor 0
+        armMotorA = hardwareMap.get(DcMotorEx.class, "arm A"); // motor 0
+        //armMotorB = hardwareMap.get(DcMotorEx.class, "arm B");
 
         clawServo = hardwareMap.get(Servo.class, "claw"); // servo 0
 
@@ -94,19 +100,49 @@ public class Jeb {
     }
 
     public void holdArm(int ticks) { // todo convert to degrees!!
-        armMotor.setTargetPosition(ticks);
-        armMotor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        armMotor.setVelocity(Consts.ARM_TPS);
+        armMotorA.setTargetPosition(ticks);
+        armMotorA.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        armMotorA.setVelocity(Consts.ARM_TPS);
     }
 
     public void setArmPower(double power) {
-        armMotor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        armMotor.setPower(power);
+        armMotorA.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        armMotorA.setPower(power);
+    }
+    private void trySwitchRunPosition(int vel) {
+        // copy-🍝 pain 2: electric bugaloo
+        if (leftMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION) { // one should mean all
+            leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            frontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            backMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
+        leftMotor.setVelocity(vel);
+        rightMotor.setVelocity(vel);
+        frontMotor.setVelocity(vel);
+        backMotor.setVelocity(vel);
+    }
+    private void resetEncoder() {
+        // pasta anyone?
+        if (leftMotor.getMode() != DcMotor.RunMode.STOP_AND_RESET_ENCODER) {
+            leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            frontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            backMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
     }
 
     public void driveCentimeters(double distanceX, double distanceY, int velocity) { // cm, cm, m/s
-        // todo
-        return;
+        int xTicks = (int)(distanceX * Consts.TICKS_PER_CM);
+        int yTicks = (int)(distanceY * Consts.TICKS_PER_CM);
+        telemetry.addData("y ticks:",yTicks);
+        leftMotor.setTargetPosition(-yTicks);
+        rightMotor.setTargetPosition(-yTicks);
+        frontMotor.setTargetPosition(xTicks);
+        backMotor.setTargetPosition(xTicks);
+        trySwitchRunPosition(velocity);
+        resetEncoder();
     }
 
     public void FOD(double powerX, double powerY) {
@@ -127,11 +163,12 @@ public class Jeb {
         rightMotor.setVelocity((powerY + turnPower) * Consts.TICKS_PER_POWER);
     }
 
-    public void gyroDrive(double powerX, double powerY) {
-        frontMotor.setVelocity((powerX) * Consts.TICKS_PER_POWER);
-        leftMotor.setVelocity((powerY - (angle_d * Consts.POWER_PER_P)) * Consts.TICKS_PER_POWER);
-        backMotor.setVelocity((powerX) * Consts.TICKS_PER_POWER);
-        rightMotor.setVelocity((powerY + (angle_d * Consts.POWER_PER_P)) * Consts.TICKS_PER_POWER);
+    public void gyroDrive(double powerX, double powerY, double orientation) {
+        drive_direction = angle_d - orientation;
+        frontMotor.setVelocity((powerX + (drive_direction * Consts.POWER_PER_P)) * Consts.TICKS_PER_POWER);
+        leftMotor.setVelocity((powerY - (drive_direction * Consts.POWER_PER_P)) * Consts.TICKS_PER_POWER);
+        backMotor.setVelocity((powerX - (drive_direction * Consts.POWER_PER_P)) * Consts.TICKS_PER_POWER);
+        rightMotor.setVelocity((powerY + (drive_direction * Consts.POWER_PER_P)) * Consts.TICKS_PER_POWER);
     }
 
     public VuforiaLocalizer initVuforia(CameraName ...webcams) {
