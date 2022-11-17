@@ -191,7 +191,7 @@ public class Jeb {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.75f;
+        tfodParameters.minResultConfidence = 0.1f;
         tfodParameters.isModelTensorFlow2 = true;
         tfodParameters.inputSize = 600;
         return ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vulo);
