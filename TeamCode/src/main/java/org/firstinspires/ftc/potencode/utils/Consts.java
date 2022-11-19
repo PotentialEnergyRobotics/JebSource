@@ -12,8 +12,8 @@ public class Consts {
 
     public static final int MIN_ARM_A_POS = -180;
     public static final int MAX_ARM_A_POS = 180;
-    public static final int MIN_ARM_B_POS = -180;
-    public static final int MAX_ARM_B_POS = 180;
+    public static final int MIN_ARM_B_POS = -20;
+    public static final int MAX_ARM_B_POS = 20;
 
     public static final double POWER_PER_P = 0.01;
 

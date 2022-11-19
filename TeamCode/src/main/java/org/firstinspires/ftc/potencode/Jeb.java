@@ -31,11 +31,11 @@ public class Jeb {
     public DcMotorEx backMotor;
 
     public DcMotorEx armMotorA;
-    //public DcMotorEx armMotorB;
+    public DcMotorEx armMotorB;
     public int currentArmAPos;
     public int currentArmBPos;
 
-    public Servo clawServo;
+    //public Servo clawServo;
 
     ///
 
@@ -72,9 +72,9 @@ public class Jeb {
         backMotor = hardwareMap.get(DcMotorEx.class, "back");
 
         armMotorA = hardwareMap.get(DcMotorEx.class, "arm A"); // motor 0
-        //armMotorB = hardwareMap.get(DcMotorEx.class, "arm B");
+        armMotorB = hardwareMap.get(DcMotorEx.class, "arm B");
 
-        clawServo = hardwareMap.get(Servo.class, "claw"); // servo 0
+        //clawServo = hardwareMap.get(Servo.class, "claw"); // servo 0
 
         frontMotor.setDirection(DcMotorEx.Direction.FORWARD);
         backMotor.setDirection(DcMotorEx.Direction.REVERSE);
@@ -99,15 +99,25 @@ public class Jeb {
         return;
     }
 
-    public void holdArm(int ticks) { // todo convert to degrees!!
+    public void holdArmA(int ticks) { // todo convert to degrees!!
         armMotorA.setTargetPosition(ticks);
         armMotorA.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         armMotorA.setVelocity(Consts.ARM_TPS);
     }
 
-    public void setArmPower(double power) {
+    public void setArmPowerA(double power) {
         armMotorA.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         armMotorA.setPower(power);
+    }
+    public void holdArmB(int ticks) { // todo convert to degrees!!
+        armMotorB.setTargetPosition(ticks);
+        armMotorB.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        armMotorB.setVelocity(Consts.ARM_TPS);
+    }
+
+    public void setArmPowerB(double power) {
+        armMotorB.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
+        armMotorB.setPower(power);
     }
     private void trySwitchRunPosition(int vel) {
         // copy-🍝 pain 2: electric bugaloo

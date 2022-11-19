@@ -14,7 +14,8 @@ public class JebbyOp extends OpMode {
     private ButtonState backButtonToggle;
     private ButtonState rightBumperToggle;
 
-    private int targetArmPosition;
+    private int targetArmAngle; // Arm A
+    private int targetArmHeight; // Arm B
 
     private double armSpeedModifier;
     private double driveSpeedModifier;
@@ -65,45 +66,66 @@ public class JebbyOp extends OpMode {
         /// arm
         // todo
         if (gamepad2.dpad_down) {
-//            targetArmPosition = Consts.ARM_LEVELS[0];
+//            targetArmAngle = Consts.ARM_LEVELS[0];
         } else if (gamepad2.dpad_left) {
-//            targetArmPosition = Consts.ARM_LEVELS[1];
+//            targetArmAngle = Consts.ARM_LEVELS[1];
         } else if (gamepad2.dpad_right) {
-//            targetArmPosition = Consts.ARM_LEVELS[2];
+//            targetArmAngle = Consts.ARM_LEVELS[2];
         } else if (gamepad2.dpad_up) {
-//            targetArmPosition = Consts.ARM_LEVELS[3];
-        } else if (gamepad2.left_stick_y == 0 && targetArmPosition == 0) { // if arm is not moving and arm just moved hold arm at position
-            //targetArmPosition = jeb.armMotorA.getCurrentPosition();
+//            targetArmAngle = Consts.ARM_LEVELS[3];
+        } else if (gamepad2.left_stick_y == 0 && targetArmAngle == 0) { // if arm is not moving and arm just moved hold arm at position
+            //targetArmAngle = jeb.armMotorA.getCurrentPosition();
         }
-        targetArmPosition = jeb.armMotorA.getCurrentPosition();
+        targetArmAngle = jeb.armMotorA.getCurrentPosition();
+        targetArmHeight = jeb.armMotorB.getCurrentPosition();
         armSpeedModifier = Consts.DEFAULT_ARM_POWER + gamepad2.left_trigger * (1 - Consts.DEFAULT_ARM_POWER) - gamepad2.right_trigger * Consts.DEFAULT_ARM_POWER;
         armSpeedModifier = Range.clip(armSpeedModifier, Consts.MIN_ARM_POWER, 1);
         telemetry.addData("Arm speed modifier", armSpeedModifier);
-        telemetry.addData("Arm A position", targetArmPosition);
+        telemetry.addData("Arm A position", targetArmAngle);
 
-        if (gamepad2.left_stick_y != 0 && targetArmPosition <= Consts.MAX_ARM_A_POS && targetArmPosition >= Consts.MIN_ARM_A_POS) { // if arm is moving (todo add limit switch)
-            //targetArmPosition = 0;
-            jeb.setArmPower(-gamepad2.left_stick_y * armSpeedModifier);
-            telemetry.addData("Arm Status:", "Moving Arm");
+        if (gamepad2.left_stick_y != 0 && targetArmAngle <= Consts.MAX_ARM_A_POS && targetArmAngle >= Consts.MIN_ARM_A_POS) { // if arm is moving (todo add limit switch)
+            //targetArmAngle = 0;
+            jeb.holdArmA((int) (jeb.armMotorA.getCurrentPosition() - gamepad2.left_stick_y));
+            telemetry.addData("Target Arm Height:", targetArmAngle);
+            telemetry.addData("Arm Angle Status:", "Moving Arm");
         }
         else { // if arm is not moving
             // do not set a new position if it's already being held at the target
-            if (targetArmPosition > Consts.MAX_ARM_A_POS) {
-                telemetry.addData("Arm Status:", "Going Down");
-                jeb.holdArm(Consts.MAX_ARM_A_POS);
-            } else if (targetArmPosition < Consts.MIN_ARM_A_POS) {
-                jeb.holdArm(Consts.MIN_ARM_A_POS);
-                telemetry.addData("Arm Status:", "Going Up");
-            } else if (targetArmPosition != jeb.armMotorA.getCurrentPosition()) {
-                jeb.holdArm(targetArmPosition);
-                telemetry.addData("Arm Status:", "Holding Position");
+            if (targetArmAngle > Consts.MAX_ARM_A_POS) {
+                telemetry.addData("Arm Angle Status:", "Going Down");
+                jeb.holdArmA(Consts.MAX_ARM_A_POS);
+            } else if (targetArmAngle < Consts.MIN_ARM_A_POS) {
+                jeb.holdArmA(Consts.MIN_ARM_A_POS);
+                telemetry.addData("Arm Angle Status:", "Going Up");
+            } else if (targetArmAngle != jeb.armMotorA.getCurrentPosition()) {
+                jeb.holdArmA(targetArmAngle);
+                telemetry.addData("Arm Angle Status:", "Holding Position");
+            }
+        }
+        if (gamepad2.right_stick_y != 0 && targetArmHeight <= Consts.MAX_ARM_B_POS && targetArmAngle >= Consts.MIN_ARM_B_POS) { // if arm is moving (todo add limit switch)
+            //targetArmAngle = 0;
+            jeb.setArmPowerB(-gamepad2.right_stick_y * armSpeedModifier);
+            telemetry.addData("Target Arm Height:", targetArmHeight);
+            telemetry.addData("Arm Height Status:", "Moving Arm");
+        }
+        else { // if arm is not moving
+            // do not set a new position if it's already being held at the target
+            if (targetArmHeight > Consts.MAX_ARM_B_POS) {
+                telemetry.addData("Arm Height Status:", "Going Down");
+                jeb.holdArmB(Consts.MAX_ARM_B_POS);
+            } else if (targetArmHeight < Consts.MIN_ARM_B_POS) {
+                jeb.holdArmB(Consts.MIN_ARM_B_POS);
+                telemetry.addData("Arm Height Status:", "Going Up");
+            } else if (targetArmHeight != jeb.armMotorB.getCurrentPosition()) {
+                jeb.holdArmB(targetArmHeight);
+                telemetry.addData("Arm Height Status:", "Holding Position");
             }
         }
         /// claw
 
         rightBumperToggle.update(gamepad2.right_bumper);
         telemetry.addData("Claw closed:", rightBumperToggle.buttonState);
-        jeb.clawServo.setPosition(rightBumperToggle.buttonState ? Consts.CLAW_MIN_POS : Consts.CLAW_MAX_POS);
+        //jeb.clawServo.setPosition(rightBumperToggle.buttonState ? Consts.CLAW_MIN_POS : Consts.CLAW_MAX_POS);
     }
 
 
