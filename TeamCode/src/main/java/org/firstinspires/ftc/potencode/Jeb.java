@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.potencode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -29,12 +31,10 @@ public class Jeb {
 
     public DcMotorEx armMotorA;
     public DcMotorEx armMotorB;
-    public int currentArmAPos;
-    public int currentArmBPos;
+    public CRServo clawA;
+    public CRServo clawB;
 
-    //public Servo clawServo;
-
-    ///
+    public TouchSensor limit;
 
     private double angle_r;
     private double angle_d;
@@ -42,8 +42,6 @@ public class Jeb {
     private double current_angle_r;
 
     private double drive_direction;
-
-    private boolean clawOpen;
 
     public Jeb(HardwareMap hardwareMap, Telemetry telemetry) {
         this.hardwareMap = hardwareMap;
@@ -61,17 +59,17 @@ public class Jeb {
         IMU = hardwareMap.get(BNO055IMU.class, "IMU");
         IMU.initialize(parameters);
 
-        ///
-
         frontMotor = hardwareMap.get(DcMotorEx.class, "front");
         rightMotor = hardwareMap.get(DcMotorEx.class, "right");
         leftMotor = hardwareMap.get(DcMotorEx.class, "left");
         backMotor = hardwareMap.get(DcMotorEx.class, "back");
 
-        armMotorA = hardwareMap.get(DcMotorEx.class, "arm A"); // motor 0
+        armMotorA = hardwareMap.get(DcMotorEx.class, "arm A");
         armMotorB = hardwareMap.get(DcMotorEx.class, "arm B");
+        clawA = hardwareMap.get(CRServo.class, "claw A");
+        clawB = hardwareMap.get(CRServo.class, "claw B");
 
-        //clawServo = hardwareMap.get(Servo.class, "claw"); // servo 0
+        limit = hardwareMap.get(TouchSensor.class, "limit");
 
         frontMotor.setDirection(DcMotorEx.Direction.FORWARD);
         backMotor.setDirection(DcMotorEx.Direction.REVERSE);
@@ -96,28 +94,8 @@ public class Jeb {
         return;
     }
 
-    public void holdArmA(int ticks) { // todo convert to degrees!!
-        armMotorA.setTargetPosition(ticks);
-        armMotorA.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        armMotorA.setVelocity(Consts.ARM_TPS);
-    }
-
-    public void setArmPowerA(double power) {
-        armMotorA.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        armMotorA.setPower(power);
-    }
-    public void holdArmB(int ticks) { // todo convert to degrees!!
-        armMotorB.setTargetPosition(ticks);
-        armMotorB.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-        armMotorB.setVelocity(Consts.ARM_TPS);
-    }
-
-    public void setArmPowerB(double power) {
-        armMotorB.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
-        armMotorB.setPower(power);
-    }
     private void trySwitchRunPosition(int vel) {
-        // copy-🍝 pain 2: electric bugaloo
+        // copy-🍝 pain
         if (leftMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION) { // one should mean all
             leftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -130,7 +108,8 @@ public class Jeb {
         frontMotor.setVelocity(vel);
         backMotor.setVelocity(vel);
     }
-    private void resetEncoder() {
+
+    public void resetDriveEncoders() {
         // pasta anyone?
         if (leftMotor.getMode() != DcMotor.RunMode.STOP_AND_RESET_ENCODER) {
             leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -138,6 +117,10 @@ public class Jeb {
             frontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             backMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
+        leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        frontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        backMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void driveCentimeters(double distanceX, double distanceY, int velocity) { // cm, cm, cm/s
@@ -150,20 +133,26 @@ public class Jeb {
         frontMotor.setTargetPosition(xTicks);
         backMotor.setTargetPosition(xTicks);
         trySwitchRunPosition(velocity); // todo actually use cm/s rather than arbitrary
-        resetEncoder();
+        resetDriveEncoders();
     }
 
-    public void FOD(double powerX, double powerY) {
+    public void driveFOD(double powerX, double powerY, double turnPower) {
         updateAngle();
-        JebbyOp.driveX = powerX * Math.cos(current_angle_r) - powerY * Math.sin(current_angle_r);
-        JebbyOp.driveY = powerX * Math.sin(current_angle_r) + powerY * Math.cos(current_angle_r);
+        double powerXFOD = powerX * Math.cos(current_angle_r) - powerY * Math.sin(current_angle_r);
+        double powerYFOD = powerX * Math.sin(current_angle_r) + powerY * Math.cos(current_angle_r);
+        frontMotor.setPower(powerXFOD + turnPower);
+        leftMotor.setPower(powerYFOD - turnPower);
+        backMotor.setPower(powerXFOD - turnPower);
+        rightMotor.setPower(powerYFOD + turnPower);
     }
+
     public void drivePower(double powerX, double powerY, double turnPower) {
         frontMotor.setPower(powerX + turnPower);
         leftMotor.setPower(powerY - turnPower);
         backMotor.setPower(powerX - turnPower);
         rightMotor.setPower(powerY + turnPower);
     }
+
     public void driveVelocity(double powerX, double powerY, double turnPower) {
         frontMotor.setVelocity((powerX + turnPower) * Consts.TICKS_PER_POWER);
         leftMotor.setVelocity((powerY - turnPower) * Consts.TICKS_PER_POWER);
