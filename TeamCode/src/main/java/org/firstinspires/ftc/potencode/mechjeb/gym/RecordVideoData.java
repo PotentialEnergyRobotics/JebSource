@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.potencode.mechjeb;
+package org.firstinspires.ftc.potencode.mechjeb.gym;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -9,6 +10,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.PipelineRecordingParameters;
 
 @TeleOp(name="Record Video Data")
+@Disabled
 public class RecordVideoData extends OpMode {
     private int cameraMonitorViewId;
     private WebcamName webcamName;

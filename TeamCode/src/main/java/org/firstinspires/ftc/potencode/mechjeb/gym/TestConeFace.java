@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.potencode.mechjeb.assisted;
+package org.firstinspires.ftc.potencode.mechjeb.gym;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.potencode.Jeb;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
 
 @Autonomous(name = "Test Cone Face")
+@Disabled
 public class TestConeFace extends OpMode {
     public static final String TFOD_MODEL_ASSET = "mechjeb.tflite";
     public static final String[] TFOD_LABELS = new String[] { "drax", "spring", "ryan" };

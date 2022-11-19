@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.potencode;
+package org.firstinspires.ftc.potencode.utils;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;

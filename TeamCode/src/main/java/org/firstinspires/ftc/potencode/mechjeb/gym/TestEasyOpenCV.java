@@ -19,8 +19,9 @@
  * SOFTWARE.
  */
 
-package org.firstinspires.ftc.potencode.mechjeb;
+package org.firstinspires.ftc.potencode.mechjeb.gym;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -53,6 +54,7 @@ import java.util.Scanner;
  * recording is active.
  */
 @TeleOp(name = "Test EZ CV")
+@Disabled
 public class TestEasyOpenCV extends LinearOpMode
 {
     OpenCvCamera camera;
