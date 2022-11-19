@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.potencode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.potencode.utils.ButtonState;
 import org.firstinspires.ftc.potencode.utils.Consts;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -35,7 +37,8 @@ public class Jeb {
     public int currentArmAPos;
     public int currentArmBPos;
 
-    //public Servo clawServo;
+    public CRServo clawServo1;
+    public CRServo clawServo2;
 
     ///
 
@@ -73,6 +76,9 @@ public class Jeb {
 
         armMotorA = hardwareMap.get(DcMotorEx.class, "arm A"); // motor 0
         armMotorB = hardwareMap.get(DcMotorEx.class, "arm B");
+
+        clawServo1 = hardwareMap.get(CRServo.class, "claw 1");
+        clawServo2 = hardwareMap.get(CRServo.class, "claw 2");
 
         //clawServo = hardwareMap.get(Servo.class, "claw"); // servo 0
 

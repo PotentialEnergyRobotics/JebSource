@@ -13,6 +13,7 @@ public class JebbyOp extends OpMode {
 
     private ButtonState backButtonToggle;
     private ButtonState rightBumperToggle;
+    private ButtonState servoToggle;
 
     private int targetArmAngle; // Arm A
     private int targetArmHeight; // Arm B
@@ -28,6 +29,7 @@ public class JebbyOp extends OpMode {
     public void init() {
         rightBumperToggle = new ButtonState();
         backButtonToggle = new ButtonState();
+        servoToggle = new ButtonState();
 
         jeb = new Jeb(hardwareMap, telemetry);
         jeb.initiate();
@@ -81,12 +83,12 @@ public class JebbyOp extends OpMode {
         armSpeedModifier = Consts.DEFAULT_ARM_POWER + gamepad2.left_trigger * (1 - Consts.DEFAULT_ARM_POWER) - gamepad2.right_trigger * Consts.DEFAULT_ARM_POWER;
         armSpeedModifier = Range.clip(armSpeedModifier, Consts.MIN_ARM_POWER, 1);
         telemetry.addData("Arm speed modifier", armSpeedModifier);
-        telemetry.addData("Arm A position", targetArmAngle);
+        telemetry.addData("Target Arm (A) Angle:", targetArmAngle);
+        telemetry.addData("Target Arm (B) Height:", targetArmHeight);
 
         if (gamepad2.left_stick_y != 0 && targetArmAngle <= Consts.MAX_ARM_A_POS && targetArmAngle >= Consts.MIN_ARM_A_POS) { // if arm is moving (todo add limit switch)
             //targetArmAngle = 0;
-            jeb.holdArmA((int) (jeb.armMotorA.getCurrentPosition() - gamepad2.left_stick_y));
-            telemetry.addData("Target Arm Height:", targetArmAngle);
+            jeb.setArmPowerA(-gamepad2.left_stick_y * armSpeedModifier);
             telemetry.addData("Arm Angle Status:", "Moving Arm");
         }
         else { // if arm is not moving
@@ -102,10 +104,10 @@ public class JebbyOp extends OpMode {
                 telemetry.addData("Arm Angle Status:", "Holding Position");
             }
         }
-        if (gamepad2.right_stick_y != 0 && targetArmHeight <= Consts.MAX_ARM_B_POS && targetArmAngle >= Consts.MIN_ARM_B_POS) { // if arm is moving (todo add limit switch)
+        if (gamepad2.right_stick_y != 0 && targetArmHeight <= Consts.MAX_ARM_B_POS && targetArmHeight >= Consts.MIN_ARM_B_POS) { // if arm is moving (todo add limit switch)
             //targetArmAngle = 0;
             jeb.setArmPowerB(-gamepad2.right_stick_y * armSpeedModifier);
-            telemetry.addData("Target Arm Height:", targetArmHeight);
+            telemetry.addData("Arm B Speed:", -gamepad2.right_stick_y * armSpeedModifier);
             telemetry.addData("Arm Height Status:", "Moving Arm");
         }
         else { // if arm is not moving
@@ -125,7 +127,14 @@ public class JebbyOp extends OpMode {
 
         rightBumperToggle.update(gamepad2.right_bumper);
         telemetry.addData("Claw closed:", rightBumperToggle.buttonState);
-        //jeb.clawServo.setPosition(rightBumperToggle.buttonState ? Consts.CLAW_MIN_POS : Consts.CLAW_MAX_POS);
+        servoToggle.update(gamepad1.x);
+        if (gamepad1.right_bumper) {
+            jeb.clawServo1.setPower(servoToggle.buttonState ? 1 : -1);
+            jeb.clawServo2.setPower(servoToggle.buttonState ? -1 : 1);
+        } else {
+            jeb.clawServo1.setPower(0);
+            jeb.clawServo2.setPower(0);
+        }
     }
 
 
