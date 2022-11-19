@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.potencode.mechjeb.assisted;
+package org.firstinspires.ftc.potencode.mechjeb.gym;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.potencode.Jeb;
@@ -17,6 +18,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
 @Autonomous(name="ColorCV")
+@Disabled
 public class Color extends OpMode {
     private Jeb jeb;
 
@@ -25,7 +27,7 @@ public class Color extends OpMode {
     @Override
     public void init() {
         jeb = new Jeb(hardwareMap, telemetry);
-        jeb.initiate();
+        jeb.awake();
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "cam"), cameraMonitorViewId);

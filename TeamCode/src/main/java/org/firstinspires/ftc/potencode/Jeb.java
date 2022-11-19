@@ -3,11 +3,8 @@ package org.firstinspires.ftc.potencode;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.potencode.utils.Consts;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
@@ -53,7 +50,7 @@ public class Jeb {
         this.telemetry = telemetry;
     }
 
-    public void initiate() {
+    public void awake() {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
         parameters.mode = BNO055IMU.SensorMode.IMU;
@@ -143,15 +140,16 @@ public class Jeb {
         }
     }
 
-    public void driveCentimeters(double distanceX, double distanceY, int velocity) { // cm, cm, m/s
+    public void driveCentimeters(double distanceX, double distanceY, int velocity) { // cm, cm, cm/s
         int xTicks = (int)(distanceX * Consts.TICKS_PER_CM);
         int yTicks = (int)(distanceY * Consts.TICKS_PER_CM);
-        telemetry.addData("y ticks:",yTicks);
+        telemetry.addData("driving x ticks", xTicks);
+        telemetry.addData("driving y ticks", yTicks);
         leftMotor.setTargetPosition(-yTicks);
         rightMotor.setTargetPosition(-yTicks);
         frontMotor.setTargetPosition(xTicks);
         backMotor.setTargetPosition(xTicks);
-        trySwitchRunPosition(velocity);
+        trySwitchRunPosition(velocity); // todo actually use cm/s rather than arbitrary
         resetEncoder();
     }
 
@@ -182,28 +180,24 @@ public class Jeb {
     }
 
     public VuforiaLocalizer initVuforia(CameraName ...webcams) {
-        /*
-         * Configure Vuforia by creating a Parameter object, and passing it to the Vuforia engine.
-         */
         VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
         parameters.vuforiaLicenseKey = Consts.VUFORIA_KEY;
+        parameters.cameraName = ClassFactory.getInstance().getCameraManager().nameForSwitchableCamera(webcams); // camera switching
 
-        // Indicate that we wish to be able to switch cameras.
-        parameters.cameraName = ClassFactory.getInstance().getCameraManager().nameForSwitchableCamera(webcams);
-
-        //  Instantiate the Vuforia engine
+        telemetry.addData("jeb", "vulo init complete");
         return ClassFactory.getInstance().createVuforia(parameters);
     }
 
     public TFObjectDetector initTfod(VuforiaLocalizer vulo) {
-        // same as vulo but for tfod
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
                 "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.1f;
+        tfodParameters.minResultConfidence = Consts.MIN_RESULT_CONFIDENCE;
         tfodParameters.isModelTensorFlow2 = true;
-        tfodParameters.inputSize = 600;
+        tfodParameters.inputSize = Consts.TFOD_INPUT_SIZE;
+
+        telemetry.addData("jeb", "tfod init complete");
         return ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vulo);
     }
 }

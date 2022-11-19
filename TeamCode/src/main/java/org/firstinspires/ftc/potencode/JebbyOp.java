@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.potencode.utils.ButtonState;
-import org.firstinspires.ftc.potencode.utils.Consts;
 
 @TeleOp(name="JebbyOp")
 public class JebbyOp extends OpMode {
@@ -30,7 +29,7 @@ public class JebbyOp extends OpMode {
         backButtonToggle = new ButtonState();
 
         jeb = new Jeb(hardwareMap, telemetry);
-        jeb.initiate();
+        jeb.awake();
     }
 
     @Override

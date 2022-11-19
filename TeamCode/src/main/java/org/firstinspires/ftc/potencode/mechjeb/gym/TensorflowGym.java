@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.potencode.mechjeb;
+package org.firstinspires.ftc.potencode.mechjeb.gym;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -13,9 +14,10 @@ import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import java.util.List;
 
 @TeleOp(name="Tensorflow Gym")
+@Disabled
 public class TensorflowGym extends OpMode {
     public static final String TFOD_MODEL_ASSET = "mechjeb.tflite";
-    private static final String TFOD_MODEL_FILE  = "/sdcard/FIRST/tflitemodels/mechjeb.tflite";
+    private static final String TFOD_MODEL_FILE  = "/sdcard/FIRST/tflitemodels/model.tflite";
     public static final String[] TFOD_LABELS = new String[] { "drax", "spring", "ryan" };
 
     private Jeb jeb;

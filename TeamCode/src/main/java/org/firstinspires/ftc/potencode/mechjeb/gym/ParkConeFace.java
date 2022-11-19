@@ -1,8 +1,9 @@
-package org.firstinspires.ftc.potencode.mechjeb.assisted;
+package org.firstinspires.ftc.potencode.mechjeb.gym;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.potencode.Jeb;
+import org.firstinspires.ftc.potencode.mechjeb.assisted.Motion;
 
 public class ParkConeFace extends OpMode {
     private Jeb jeb;
@@ -13,7 +14,7 @@ public class ParkConeFace extends OpMode {
     @Override
     public void init() {
         jeb = new Jeb(hardwareMap, telemetry);
-        jeb.initiate();
+        jeb.awake();
     }
 
     @Override

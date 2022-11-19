@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.potencode.mechjeb;
+package org.firstinspires.ftc.potencode.mechjeb.gym;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.opencv.core.CvType;
@@ -33,6 +34,7 @@ import java.util.Scanner;
 // Epic person: https://www.linkedin.com/pulse/opencv-java-yolo-object-detection-images-svetozar-radoj%C4%8Din
 
 @Autonomous(name = "YOLO")
+@Disabled
 public class YOLO extends OpMode {
     private OpenCvInternalCamera phoneCam;
     private JebNetPipeline pipeline;
