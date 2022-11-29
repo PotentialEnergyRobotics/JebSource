@@ -2,6 +2,7 @@ package org.firstinspires.ftc.potencode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.potencode.utils.ButtonState;
@@ -12,12 +13,8 @@ public class JebbyOp extends OpMode {
 
     private ButtonState backButtonToggle;
     private ButtonState rightBumperToggle;
-    private ButtonState servoToggle;
+    private ButtonState leftBumperToggle;
 
-    private int targetArmAngle; // Arm A
-    private int targetArmHeight; // Arm B
-
-    private double armSpeedModifier;
     private double driveSpeedModifier;
 
     public static double driveX;
@@ -26,19 +23,27 @@ public class JebbyOp extends OpMode {
 
     @Override
     public void init() {
-        rightBumperToggle = new ButtonState();
-        backButtonToggle = new ButtonState();
-        servoToggle = new ButtonState();
-
         jeb = new Jeb(hardwareMap, telemetry);
         jeb.awake();
+
+        jeb.resetDriveEncoders();
+        jeb.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        jeb.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        jeb.frontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        jeb.backMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        jeb.armMotorA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        jeb.armMotorB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        jeb.armMotorA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        jeb.armMotorB.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        backButtonToggle = new ButtonState();
+        rightBumperToggle = new ButtonState();
+        leftBumperToggle = new ButtonState();
     }
 
     @Override
     public void loop() {
-
-        /// drive
-
+        // drive
         backButtonToggle.update(gamepad1.back);
         telemetry.addData("FOD", backButtonToggle.buttonState);
 
@@ -46,94 +51,66 @@ public class JebbyOp extends OpMode {
         driveSpeedModifier = Range.clip(driveSpeedModifier,  Consts.MIN_DRIVE_POWER, 1);
         telemetry.addData("Move speed modifier", driveSpeedModifier);
 
-        driveX = gamepad1.left_stick_x * driveSpeedModifier;
-        driveY = gamepad1.left_stick_y * driveSpeedModifier;
+        driveX = -gamepad1.left_stick_x * driveSpeedModifier;
+        driveY = -gamepad1.left_stick_y * driveSpeedModifier;
         driveTurn = gamepad1.right_stick_x * driveSpeedModifier;
-        if (gamepad1.y) {
-            if (Math.abs(driveX) > Math.abs(driveY)) {
-                driveY = 0;
-            } else if (Math.abs(driveY) > Math.abs(driveX)) {
-                driveX = 0;
-            }
-        }
+
         if (gamepad1.x) {
             jeb.resetAngle();
         }
+
         if (backButtonToggle.buttonState) {
-            jeb.FOD(driveX, driveY);
+            jeb.driveFOD(driveX, driveY, driveTurn);
         }
-        jeb.driveVelocity(driveX, driveY, driveTurn);
-        telemetry.addData("x:", gamepad1.x);
-        /// arm
-        // todo
-        if (gamepad2.dpad_down) {
-//            targetArmAngle = Consts.ARM_LEVELS[0];
-        } else if (gamepad2.dpad_left) {
-//            targetArmAngle = Consts.ARM_LEVELS[1];
-        } else if (gamepad2.dpad_right) {
-//            targetArmAngle = Consts.ARM_LEVELS[2];
-        } else if (gamepad2.dpad_up) {
-//            targetArmAngle = Consts.ARM_LEVELS[3];
-        } else if (gamepad2.left_stick_y == 0 && targetArmAngle == 0) { // if arm is not moving and arm just moved hold arm at position
-            //targetArmAngle = jeb.armMotorA.getCurrentPosition();
+        else {
+            jeb.driveVelocity(driveX, driveY, driveTurn);
         }
-        targetArmAngle = jeb.armMotorA.getCurrentPosition();
-        targetArmHeight = jeb.armMotorB.getCurrentPosition();
-        armSpeedModifier = Consts.DEFAULT_ARM_POWER + gamepad2.left_trigger * (1 - Consts.DEFAULT_ARM_POWER) - gamepad2.right_trigger * Consts.DEFAULT_ARM_POWER;
-        armSpeedModifier = Range.clip(armSpeedModifier, Consts.MIN_ARM_POWER, 1);
-        telemetry.addData("Arm speed modifier", armSpeedModifier);
-        telemetry.addData("Target Arm (A) Angle:", targetArmAngle);
-        telemetry.addData("Target Arm (B) Height:", targetArmHeight);
 
-        if (gamepad2.left_stick_y != 0 && targetArmAngle <= Consts.MAX_ARM_A_POS && targetArmAngle >= Consts.MIN_ARM_A_POS) { // if arm is moving (todo add limit switch)
-            //targetArmAngle = 0;
-            jeb.setArmPowerA(-gamepad2.left_stick_y * armSpeedModifier);
-            telemetry.addData("Arm Angle Status:", "Moving Arm");
-        }
-        else { // if arm is not moving
-            // do not set a new position if it's already being held at the target
-            if (targetArmAngle > Consts.MAX_ARM_A_POS) {
-                telemetry.addData("Arm Angle Status:", "Going Down");
-                jeb.holdArmA(Consts.MAX_ARM_A_POS);
-            } else if (targetArmAngle < Consts.MIN_ARM_A_POS) {
-                jeb.holdArmA(Consts.MIN_ARM_A_POS);
-                telemetry.addData("Arm Angle Status:", "Going Up");
-            } else if (targetArmAngle != jeb.armMotorA.getCurrentPosition()) {
-                jeb.holdArmA(targetArmAngle);
-                telemetry.addData("Arm Angle Status:", "Holding Position");
-            }
-        }
-        if (gamepad2.right_stick_y != 0 && targetArmHeight <= Consts.MAX_ARM_B_POS && targetArmHeight >= Consts.MIN_ARM_B_POS) { // if arm is moving (todo add limit switch)
-            //targetArmAngle = 0;
-            jeb.setArmPowerB(gamepad2.right_stick_y * armSpeedModifier);
-            telemetry.addData("Arm B Speed:", gamepad2.right_stick_y * armSpeedModifier);
-            telemetry.addData("Arm Height Status:", "Moving Arm");
-        }
-        else { // if arm is not moving
-            // do not set a new position if it's already being held at the target
-            if (targetArmHeight > Consts.MAX_ARM_B_POS) {
-                telemetry.addData("Arm Height Status:", "Going Down");
-                jeb.holdArmB(Consts.MAX_ARM_B_POS);
-            } else if (targetArmHeight < Consts.MIN_ARM_B_POS) {
-                jeb.holdArmB(Consts.MIN_ARM_B_POS);
-                telemetry.addData("Arm Height Status:", "Going Up");
-            } else if (targetArmHeight != jeb.armMotorB.getCurrentPosition()) {
-                jeb.holdArmB(targetArmHeight);
-                telemetry.addData("Arm Height Status:", "Holding Position");
-            }
-        }
-        /// claw
+        // arm
 
-        rightBumperToggle.update(gamepad1.right_bumper);
-        telemetry.addData("Claw closed:", rightBumperToggle.buttonState);
-        servoToggle.update(gamepad2.x);
-        if (gamepad2.right_bumper) {
-            jeb.clawServo1.setPower(servoToggle.buttonState ? 1 : -1);
-            jeb.clawServo2.setPower(servoToggle.buttonState ? -1 : 1);
-        } else {
-            jeb.clawServo1.setPower(0);
-            jeb.clawServo2.setPower(0);
+        telemetry.addData("gear pos", jeb.armMotorA.getCurrentPosition());
+        telemetry.addData("slide pos", jeb.armMotorB.getCurrentPosition());
+        telemetry.addData("limit", jeb.limit.isPressed());
+
+        // todo the gear should only move if the slide is down!!
+
+//        if ((jeb.armMotorA.getCurrentPosition() < Consts.MAX_ARM_A_POS || gamepad2.left_stick_y < 0) && (!jeb.limit.isPressed() || gamepad2.left_stick_y < 0))
+//            jeb.armMotorA.setPower(-gamepad2.left_stick_y);
+//        else {
+//            jeb.armMotorA.setPower(0);
+//        }
+
+        if (jeb.limit.isPressed()) {
+            jeb.armMotorA.setPower(0);
         }
+        if (!jeb.limit.isPressed() || gamepad2.left_stick_y < 0) {
+            jeb.armMotorA.setPower(-gamepad2.left_stick_y * Consts.TICKS_PER_POWER);
+        }
+
+//        if ((jeb.armMotorB.getCurrentPosition() < Consts.MAX_ARM_B_POS || gamepad2.right_stick_y > 0) &&
+//                (jeb.armMotorB.getCurrentPosition() > Consts.MIN_ARM_B_POS || gamepad2.right_stick_y < 0)) {
+//            jeb.armMotorB.setPower(gamepad2.right_stick_y);
+//        }
+//        else {
+//            jeb.armMotorB.setPower(0);
+//        }
+        jeb.armMotorB.setPower(-gamepad2.right_stick_y);
+
+        // claw
+        rightBumperToggle.update(gamepad2.right_bumper);
+        telemetry.addData("claw in", rightBumperToggle.buttonState);
+        leftBumperToggle.update(gamepad2.left_bumper);
+        telemetry.addData("claw on", leftBumperToggle.buttonState);
+
+        if (leftBumperToggle.buttonState) {
+            jeb.clawA.setPower(rightBumperToggle.buttonState ? -Consts.DEFAULT_ARM_POWER : Consts.DEFAULT_ARM_POWER);
+            jeb.clawB.setPower(rightBumperToggle.buttonState ? Consts.DEFAULT_ARM_POWER : -Consts.DEFAULT_ARM_POWER);
+        }
+        else {
+            jeb.clawA.setPower(0);
+            jeb.clawB.setPower(0);
+        }
+
     }
 
 

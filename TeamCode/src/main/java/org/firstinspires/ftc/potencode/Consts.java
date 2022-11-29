@@ -2,18 +2,17 @@ package org.firstinspires.ftc.potencode;
 
 public class Consts {
     public static final int ARM_TPS = 50;
-    public static final double CLAW_MIN_POS = 0.68;
-    public static final double CLAW_MAX_POS = 0.98;
+    public static final int MOVE_TPS = 900;
 
-    public static final double DEFAULT_ARM_POWER = 1;
+    public static final double DEFAULT_ARM_POWER = 0.4;
     public static final double MIN_ARM_POWER = 0.2;
     public static final double DEFAULT_DRIVE_POWER = 0.4;
     public static final double MIN_DRIVE_POWER = 0.2;
 
-    public static final int MIN_ARM_A_POS = -180000;
-    public static final int MAX_ARM_A_POS = 180000;
-    public static final int MIN_ARM_B_POS = -180000;
-    public static final int MAX_ARM_B_POS = 180000;
+    public static final int MIN_ARM_A_POS = -7180;
+    public static final int MAX_ARM_A_POS = 0;
+    public static final int MIN_ARM_B_POS = -7620;
+    public static final int MAX_ARM_B_POS = 0;
 
     public static final double POWER_PER_P = 0.01;
 

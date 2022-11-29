@@ -33,6 +33,7 @@ public class ConeFaceAll extends OpMode {
     public void init() {
         jeb = new Jeb(hardwareMap, telemetry);
         jeb.awake();
+        jeb.resetDriveEncoders();
 
         camfr = hardwareMap.get(WebcamName.class, "cam fr");
         vulo = jeb.initVuforia(camfr);
@@ -50,12 +51,13 @@ public class ConeFaceAll extends OpMode {
             @Override
             public void init() {
                 runtime.reset();
-                telemetry.addData("direction", "direction");
-                jeb.driveCentimeters(parkTarget == 0 ? 0.65*Consts.CM_PER_TILE : -0.65*Consts.CM_PER_TILE, 0, 1000);
+                telemetry.addData("direction", "right");
+                jeb.driveCentimeters(parkTarget == 0 ? 0.7 * Consts.CM_PER_TILE : -0.8 * Consts.CM_PER_TILE, 0, Consts.MOVE_TPS);
             }
 
             @Override
-            public void run() { }
+            public void run() {
+            }
 
             @Override
             public void cleanup() { }
@@ -70,11 +72,12 @@ public class ConeFaceAll extends OpMode {
             public void init() {
                 runtime.reset();
                 telemetry.addData("direction", "forward");
-                jeb.driveCentimeters(0, 0.85*Consts.CM_PER_TILE, 1000);
+                jeb.driveCentimeters(0, Consts.CM_PER_TILE, Consts.MOVE_TPS);
             }
 
             @Override
-            public void run() { }
+            public void run() {
+            }
 
             @Override
             public void cleanup() { }
