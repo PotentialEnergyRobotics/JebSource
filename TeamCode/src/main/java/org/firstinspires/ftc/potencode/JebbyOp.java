@@ -59,9 +59,9 @@ public class JebbyOp extends OpMode {
         driveSpeedModifier = Range.clip(driveSpeedModifier,  Consts.MIN_DRIVE_POWER, 1);
         telemetry.addData("Move speed modifier", driveSpeedModifier);
 
-        driveX = -gamepad1.left_stick_x * driveSpeedModifier;
-        driveY = -gamepad1.left_stick_y * driveSpeedModifier;
-        driveTurn = gamepad1.right_stick_x * driveSpeedModifier;
+        driveX = Math.pow(-gamepad1.left_stick_x * driveSpeedModifier, 3);
+        driveY = Math.pow(-gamepad1.left_stick_y * driveSpeedModifier, 3);
+        driveTurn = Math.pow(gamepad1.right_stick_x * driveSpeedModifier, 3);
 
         if (gamepad1.x) {
             jeb.resetAngle();
