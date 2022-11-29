@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.potencode.utils.Consts;
+
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
@@ -55,7 +55,7 @@ public class Jeb {
         this.telemetry = telemetry;
     }
 
-    public void initiate() {
+    public void awake() {
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
         parameters.mode = BNO055IMU.SensorMode.IMU;
@@ -119,7 +119,6 @@ public class Jeb {
         armMotorB.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         armMotorB.setVelocity(Consts.ARM_TPS);
     }
-
     public void setArmPowerB(double power) {
         armMotorB.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         armMotorB.setPower(power);
@@ -153,8 +152,8 @@ public class Jeb {
         int yTicks = (int)(distanceY * Consts.TICKS_PER_CM);
         telemetry.addData("driving x ticks", xTicks);
         telemetry.addData("driving y ticks", yTicks);
-        leftMotor.setTargetPosition(-yTicks);
-        rightMotor.setTargetPosition(-yTicks);
+        leftMotor.setTargetPosition(yTicks);
+        rightMotor.setTargetPosition(yTicks);
         frontMotor.setTargetPosition(xTicks);
         backMotor.setTargetPosition(xTicks);
         trySwitchRunPosition(velocity); // todo actually use cm/s rather than arbitrary

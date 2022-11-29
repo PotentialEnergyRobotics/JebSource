@@ -50,13 +50,12 @@ public class ConeFaceAll extends OpMode {
             @Override
             public void init() {
                 runtime.reset();
-                telemetry.addData("direction", "right");
+                telemetry.addData("direction", "direction");
+                jeb.driveCentimeters(parkTarget == 0 ? 0.65*Consts.CM_PER_TILE : -0.65*Consts.CM_PER_TILE, 0, 1000);
             }
 
             @Override
-            public void run() {
-                jeb.driveCentimeters(Consts.CM_PER_TILE / 2, 0, 0);
-            }
+            public void run() { }
 
             @Override
             public void cleanup() { }
@@ -71,12 +70,11 @@ public class ConeFaceAll extends OpMode {
             public void init() {
                 runtime.reset();
                 telemetry.addData("direction", "forward");
+                jeb.driveCentimeters(0, 0.85*Consts.CM_PER_TILE, 1000);
             }
 
             @Override
-            public void run() {
-                jeb.driveCentimeters(0, Consts.CM_PER_TILE / 2, 0);
-            }
+            public void run() { }
 
             @Override
             public void cleanup() { }
@@ -95,7 +93,8 @@ public class ConeFaceAll extends OpMode {
                 double width  = Math.abs(recognition.getRight() - recognition.getLeft()) ;
                 double height = Math.abs(recognition.getTop()  - recognition.getBottom()) ;
 
-                coneLabelsArrayList.indexOf(recognition.getLabel());
+                parkTarget = coneLabelsArrayList.indexOf(recognition.getLabel());
+                telemetry.addData("park target", parkTarget);
 
                 telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100 );
                 telemetry.addData("- Position (Row/Col)","%.0f / %.0f", row, col);
@@ -103,6 +102,11 @@ public class ConeFaceAll extends OpMode {
             }
             telemetry.update();
         }
+    }
+
+    @Override
+    public void start() {
+        motions.get(0).init();
     }
 
     @Override

@@ -10,8 +10,8 @@ public class Consts {
     public static final double DEFAULT_DRIVE_POWER = 0.4;
     public static final double MIN_DRIVE_POWER = 0.2;
 
-    public static final int MIN_ARM_A_POS = -180;
-    public static final int MAX_ARM_A_POS = 180;
+    public static final int MIN_ARM_A_POS = -180000;
+    public static final int MAX_ARM_A_POS = 180000;
     public static final int MIN_ARM_B_POS = -180000;
     public static final int MAX_ARM_B_POS = 180000;
 
