@@ -13,6 +13,9 @@ public class CirclePipelineGym extends OpenCvPipeline {
 
     Mat foundCircles = new Mat();
 
+    Point point;
+    int radius;
+
     @Override
     public Mat processFrame(Mat input)
     {
@@ -26,12 +29,12 @@ public class CirclePipelineGym extends OpenCvPipeline {
             // telemetry.addData("[Found Circle]", "%s", foundCircles.get(0, i));
             double[] vCircle = foundCircles.get(0, i);
 
-            Point pt = new Point(Math.round(vCircle[0]), Math.round(vCircle[1]));
-            int radius = (int)Math.round(vCircle[2]);
+            point = new Point(Math.round(vCircle[0]), Math.round(vCircle[1]));
+            radius = (int)Math.round(vCircle[2]);
 //            telemetry.addData("Found circle at", pt);
 //            telemetry.addData("Radius", radius);
 
-            Imgproc.circle(grayBlurMat, pt, radius, new Scalar(255, 0, 0), 2);
+            Imgproc.circle(grayBlurMat, point, radius, new Scalar(255, 0, 0), 2);
         }
 
 

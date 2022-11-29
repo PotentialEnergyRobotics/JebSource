@@ -58,6 +58,8 @@ public class CircleDriveGym extends LinearOpMode
 {
     OpenCvCamera camera;
 
+    CirclePipelineGym circlePipelineGym = new CirclePipelineGym();
+
     @Override
     public void runOpMode()
     {
@@ -71,7 +73,7 @@ public class CircleDriveGym extends LinearOpMode
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "cam"), cameraMonitorViewId);
 
-        camera.setPipeline(new CirclePipelineGym());
+        camera.setPipeline(circlePipelineGym);
 //        camera.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
 //        camera.setViewportRenderer(OpenCvCamera.ViewportRenderer.GPU_ACCELERATED);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
@@ -110,7 +112,12 @@ public class CircleDriveGym extends LinearOpMode
             telemetry.addData("Pipeline time ms", camera.getPipelineTimeMs());
             telemetry.addData("Overhead time ms", camera.getOverheadTimeMs());
             telemetry.addData("Theoretical max FPS", camera.getCurrentPipelineMaxFps());
+
+            telemetry.addData("Point", circlePipelineGym.point);
+            telemetry.addData("Radius", circlePipelineGym.radius);
+
             telemetry.update();
+
 
             /*
              * For the purposes of this sample, throttle ourselves to 10Hz loop to avoid burning
