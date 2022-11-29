@@ -29,8 +29,8 @@ public class Jeb {
     public DcMotorEx leftMotor;
     public DcMotorEx backMotor;
 
-    public DcMotorEx armMotorA;
-    public DcMotorEx armMotorB;
+    public DcMotorEx bag;
+    public DcMotorEx slide;
     public CRServo clawA;
     public CRServo clawB;
 
@@ -64,17 +64,22 @@ public class Jeb {
         leftMotor = hardwareMap.get(DcMotorEx.class, "left");
         backMotor = hardwareMap.get(DcMotorEx.class, "back");
 
-        armMotorA = hardwareMap.get(DcMotorEx.class, "arm A");
-        armMotorB = hardwareMap.get(DcMotorEx.class, "arm B");
+        bag = hardwareMap.get(DcMotorEx.class, "bag");
+        slide = hardwareMap.get(DcMotorEx.class, "slide");
         clawA = hardwareMap.get(CRServo.class, "claw A");
         clawB = hardwareMap.get(CRServo.class, "claw B");
 
-        limit = hardwareMap.get(TouchSensor.class, "limit");
+        limit = hardwareMap.get(TouchSensor.class, "limit bag");
+        limit = hardwareMap.get(TouchSensor.class, "limit slide");
 
         frontMotor.setDirection(DcMotorEx.Direction.FORWARD);
         backMotor.setDirection(DcMotorEx.Direction.REVERSE);
         leftMotor.setDirection(DcMotorEx.Direction.REVERSE);
         rightMotor.setDirection(DcMotorEx.Direction.FORWARD);
+    }
+
+    public void zeros() {
+
     }
 
     public void updateAngle() {

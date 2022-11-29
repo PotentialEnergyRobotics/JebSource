@@ -31,14 +31,21 @@ public class JebbyOp extends OpMode {
         jeb.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         jeb.frontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         jeb.backMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        jeb.armMotorA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        jeb.armMotorB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        jeb.armMotorA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        jeb.armMotorB.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        jeb.bag.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        jeb.slide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        jeb.bag.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        jeb.slide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         backButtonToggle = new ButtonState();
         rightBumperToggle = new ButtonState();
         leftBumperToggle = new ButtonState();
+
+
+    }
+
+    @Override
+    public void init_loop() {
+        jeb.zeros();
     }
 
     @Override
@@ -68,8 +75,8 @@ public class JebbyOp extends OpMode {
 
         // arm
 
-        telemetry.addData("gear pos", jeb.armMotorA.getCurrentPosition());
-        telemetry.addData("slide pos", jeb.armMotorB.getCurrentPosition());
+        telemetry.addData("gear pos", jeb.bag.getCurrentPosition());
+        telemetry.addData("slide pos", jeb.slide.getCurrentPosition());
         telemetry.addData("limit", jeb.limit.isPressed());
 
         // todo the gear should only move if the slide is down!!
@@ -81,10 +88,10 @@ public class JebbyOp extends OpMode {
 //        }
 
         if (jeb.limit.isPressed()) {
-            jeb.armMotorA.setPower(0);
+            jeb.bag.setPower(0);
         }
         if (!jeb.limit.isPressed() || gamepad2.left_stick_y < 0) {
-            jeb.armMotorA.setPower(-gamepad2.left_stick_y * Consts.TICKS_PER_POWER);
+            jeb.bag.setPower(-gamepad2.left_stick_y * Consts.TICKS_PER_POWER);
         }
 
 //        if ((jeb.armMotorB.getCurrentPosition() < Consts.MAX_ARM_B_POS || gamepad2.right_stick_y > 0) &&
@@ -94,7 +101,7 @@ public class JebbyOp extends OpMode {
 //        else {
 //            jeb.armMotorB.setPower(0);
 //        }
-        jeb.armMotorB.setPower(-gamepad2.right_stick_y);
+        jeb.slide.setPower(-gamepad2.right_stick_y);
 
         // claw
         rightBumperToggle.update(gamepad2.right_bumper);
