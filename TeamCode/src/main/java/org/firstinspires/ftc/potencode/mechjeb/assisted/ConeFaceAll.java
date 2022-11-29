@@ -33,6 +33,7 @@ public class ConeFaceAll extends OpMode {
     public void init() {
         jeb = new Jeb(hardwareMap, telemetry);
         jeb.awake();
+        jeb.resetDriveEncoders();
 
         camfr = hardwareMap.get(WebcamName.class, "cam fr");
         vulo = jeb.initVuforia(camfr);
@@ -51,7 +52,7 @@ public class ConeFaceAll extends OpMode {
             public void init() {
                 runtime.reset();
                 telemetry.addData("direction", "right");
-                jeb.driveCentimeters(parkTarget == 0 ? 0.7 * Consts.CM_PER_TILE : -0.7 * Consts.CM_PER_TILE, 0, Consts.MOVE_TPS);
+                jeb.driveCentimeters(parkTarget == 0 ? 0.7 * Consts.CM_PER_TILE : -0.8 * Consts.CM_PER_TILE, 0, Consts.MOVE_TPS);
             }
 
             @Override
@@ -96,6 +97,7 @@ public class ConeFaceAll extends OpMode {
                 double height = Math.abs(recognition.getTop()  - recognition.getBottom()) ;
 
                 parkTarget = coneLabelsArrayList.indexOf(recognition.getLabel());
+                telemetry.addData("park target", parkTarget);
 
                 telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100 );
                 telemetry.addData("- Position (Row/Col)","%.0f / %.0f", row, col);

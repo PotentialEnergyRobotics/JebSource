@@ -117,10 +117,10 @@ public class Jeb {
             frontMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             backMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
-        leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        frontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        backMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //frontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //backMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void driveCentimeters(double distanceX, double distanceY, int velocity) { // cm, cm, cm/s
@@ -128,8 +128,8 @@ public class Jeb {
         int yTicks = (int)(distanceY * Consts.TICKS_PER_CM);
         telemetry.addData("driving x ticks", xTicks);
         telemetry.addData("driving y ticks", yTicks);
-        leftMotor.setTargetPosition(-yTicks);
-        rightMotor.setTargetPosition(-yTicks);
+        leftMotor.setTargetPosition(yTicks);
+        rightMotor.setTargetPosition(yTicks);
         frontMotor.setTargetPosition(xTicks);
         backMotor.setTargetPosition(xTicks);
         trySwitchRunPosition(velocity); // todo actually use cm/s rather than arbitrary
@@ -140,10 +140,10 @@ public class Jeb {
         updateAngle();
         double powerXFOD = powerX * Math.cos(current_angle_r) - powerY * Math.sin(current_angle_r);
         double powerYFOD = powerX * Math.sin(current_angle_r) + powerY * Math.cos(current_angle_r);
-        frontMotor.setPower(powerXFOD + turnPower);
-        leftMotor.setPower(powerYFOD - turnPower);
-        backMotor.setPower(powerXFOD - turnPower);
-        rightMotor.setPower(powerYFOD + turnPower);
+        frontMotor.setVelocity((powerXFOD + turnPower) * Consts.TICKS_PER_POWER);
+        leftMotor.setVelocity((powerYFOD - turnPower) * Consts.TICKS_PER_POWER);
+        backMotor.setVelocity((powerXFOD - turnPower) * Consts.TICKS_PER_POWER);
+        rightMotor.setVelocity((powerYFOD + turnPower) * Consts.TICKS_PER_POWER);
     }
 
     public void drivePower(double powerX, double powerY, double turnPower) {

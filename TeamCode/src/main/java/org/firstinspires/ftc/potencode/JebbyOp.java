@@ -27,6 +27,10 @@ public class JebbyOp extends OpMode {
         jeb.awake();
 
         jeb.resetDriveEncoders();
+        jeb.leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        jeb.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        jeb.frontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        jeb.backMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         jeb.armMotorA.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         jeb.armMotorB.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         jeb.armMotorA.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -59,7 +63,7 @@ public class JebbyOp extends OpMode {
             jeb.driveFOD(driveX, driveY, driveTurn);
         }
         else {
-            jeb.drivePower(driveX, driveY, driveTurn);
+            jeb.driveVelocity(driveX, driveY, driveTurn);
         }
 
         // arm
@@ -68,19 +72,29 @@ public class JebbyOp extends OpMode {
         telemetry.addData("slide pos", jeb.armMotorB.getCurrentPosition());
         telemetry.addData("limit", jeb.limit.isPressed());
 
-        if ((jeb.armMotorA.getCurrentPosition() < Consts.MAX_ARM_A_POS || gamepad2.left_stick_y < 0) && (!jeb.limit.isPressed() || gamepad2.left_stick_y < 0))
-            jeb.armMotorA.setPower(-gamepad2.left_stick_y);
-        else {
+        // todo the gear should only move if the slide is down!!
+
+//        if ((jeb.armMotorA.getCurrentPosition() < Consts.MAX_ARM_A_POS || gamepad2.left_stick_y < 0) && (!jeb.limit.isPressed() || gamepad2.left_stick_y < 0))
+//            jeb.armMotorA.setPower(-gamepad2.left_stick_y);
+//        else {
+//            jeb.armMotorA.setPower(0);
+//        }
+
+        if (jeb.limit.isPressed()) {
             jeb.armMotorA.setPower(0);
         }
+        if (!jeb.limit.isPressed() || gamepad2.left_stick_y < 0) {
+            jeb.armMotorA.setPower(-gamepad2.left_stick_y * Consts.TICKS_PER_POWER);
+        }
 
-        if ((jeb.armMotorB.getCurrentPosition() < Consts.MAX_ARM_B_POS || gamepad2.right_stick_y > 0) &&
-                (jeb.armMotorB.getCurrentPosition() > Consts.MIN_ARM_B_POS || gamepad2.right_stick_y < 0)) {
-            jeb.armMotorB.setPower(gamepad2.right_stick_y);
-        }
-        else {
-            jeb.armMotorB.setPower(0);
-        }
+//        if ((jeb.armMotorB.getCurrentPosition() < Consts.MAX_ARM_B_POS || gamepad2.right_stick_y > 0) &&
+//                (jeb.armMotorB.getCurrentPosition() > Consts.MIN_ARM_B_POS || gamepad2.right_stick_y < 0)) {
+//            jeb.armMotorB.setPower(gamepad2.right_stick_y);
+//        }
+//        else {
+//            jeb.armMotorB.setPower(0);
+//        }
+        jeb.armMotorB.setPower(-gamepad2.right_stick_y);
 
         // claw
         rightBumperToggle.update(gamepad2.right_bumper);
