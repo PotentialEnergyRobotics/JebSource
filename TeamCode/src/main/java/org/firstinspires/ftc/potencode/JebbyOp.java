@@ -63,10 +63,17 @@ public class JebbyOp extends OpMode {
         driveY = -gamepad1.left_stick_y * driveSpeedModifier;
         driveTurn = gamepad1.right_stick_x * driveSpeedModifier;
 
+
         if (gamepad1.x) {
             jeb.resetAngle();
         }
-
+        if (gamepad1.y) {
+            if (Math.abs(driveX) > Math.abs(driveY)) {
+                driveY = 0;
+            } else {
+                driveX = 0;
+            }
+        }
         if (backButtonToggle.buttonState) {
             jeb.driveFOD(driveX, driveY, driveTurn);
         }
