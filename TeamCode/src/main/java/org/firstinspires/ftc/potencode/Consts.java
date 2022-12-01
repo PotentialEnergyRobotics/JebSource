@@ -9,10 +9,15 @@ public class Consts {
     public static final double DEFAULT_DRIVE_POWER = 0.4;
     public static final double MIN_DRIVE_POWER = 0.2;
 
-    public static final int MIN_ARM_A_POS = -7180;
-    public static final int MAX_ARM_A_POS = 0;
-    public static final int MIN_ARM_B_POS = -7620;
-    public static final int MAX_ARM_B_POS = 0;
+    public static final int MIN_ARM_BAG_POS = -7180;
+    public static final int MAX_ARM_BAG_POS = 0;
+    public static final int MIN_ARM_SLIDE_POS = -7620;
+    public static final int MAX_ARM_SLIDE_POS = 0;
+
+    public static final int PICKUP_ARM_POS = -200;
+    public static final int LOW_ARM_POS = -1445;
+    public static final int MID_ARM_POS = -2685;
+    public static final int HIGH_ARM_POS = -3925;
 
     public static final double POWER_PER_P = 0.01;
 
