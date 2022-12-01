@@ -3,9 +3,11 @@ package org.firstinspires.ftc.potencode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.potencode.utils.ButtonState;
+import org.firstinspires.ftc.robotcore.external.Const;
 
 @TeleOp(name="JebbyOp")
 public class JebbyOp extends OpMode {
@@ -20,6 +22,8 @@ public class JebbyOp extends OpMode {
     public static double driveX;
     public static double driveY;
     public static double driveTurn;
+
+    private ElapsedTime bagRuntime;
 
     @Override
     public void init() {
@@ -46,7 +50,13 @@ public class JebbyOp extends OpMode {
 
     @Override
     public void init_loop() {
-        jeb.zeros();
+        if (!jeb.limitBag.isPressed() && !jeb.limitSlide.isPressed()) {
+            jeb.zeros();
+            bagRuntime.reset();
+        }
+        else {
+            jeb.bagMotor.setPower(-Consts.DEFAULT_ARM_POWER);
+        }
     }
 
     @Override
@@ -102,7 +112,17 @@ public class JebbyOp extends OpMode {
 //        else {
 //            jeb.armMotorB.setPower(0);
 //        }
-        jeb.slideMotor.setPower(-gamepad2.right_stick_y);
+        if (jeb.limitSlide.isPressed() || jeb.slideMotor.getCurrentPosition() >= Consts.MAX_ARM_BAG_POS) {
+            jeb.slideMotor.setPower(0);
+        }
+        if (!jeb.limitSlide.isPressed() || gamepad2.left_stick_y < 0 || (jeb.slideMotor.getCurrentPosition() >= Consts.MAX_ARM_BAG_POS && gamepad2.left_stick_y > 0)) {
+            jeb.slideMotor.setPower(-gamepad2.right_stick_y * Consts.TICKS_PER_POWER);
+        }
+
+        if (gamepad2.dpad_down) jeb.slideMotor.setTargetPosition(Consts.LOW_ARM_POS);
+        else if (gamepad2.dpad_left) jeb.slideMotor.setTargetPosition(Consts.LOW_ARM_POS);
+        else if (gamepad2.dpad_right) jeb.slideMotor.setTargetPosition(Consts.MID_ARM_POS);
+//        else if (gamepad2.dpad_up) jeb.slideMotor.setTargetPosition(Consts.HIGH_ARM_POS);
 
         // claw
         rightBumperToggle.update(gamepad2.right_bumper);

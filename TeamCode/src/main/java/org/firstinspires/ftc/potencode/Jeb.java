@@ -64,14 +64,18 @@ public class Jeb {
         rightMotor = hardwareMap.get(DcMotorEx.class, "right");
         leftMotor = hardwareMap.get(DcMotorEx.class, "left");
         backMotor = hardwareMap.get(DcMotorEx.class, "back");
+        frontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        backMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         bagMotor = hardwareMap.get(DcMotorEx.class, "bag");
         slideMotor = hardwareMap.get(DcMotorEx.class, "slide");
         clawServoA = hardwareMap.get(CRServo.class, "claw A");
         clawServoB = hardwareMap.get(CRServo.class, "claw B");
 
-        limitBag = hardwareMap.get(TouchSensor.class, "limit bag");
-        limitSlide = hardwareMap.get(TouchSensor.class, "limit slide");
+        limitBag = hardwareMap.get(TouchSensor.class, "bag");
+        limitSlide = hardwareMap.get(TouchSensor.class, "slide");
 
         frontMotor.setDirection(DcMotorEx.Direction.FORWARD);
         backMotor.setDirection(DcMotorEx.Direction.REVERSE);
@@ -80,8 +84,14 @@ public class Jeb {
     }
 
     public void zeros() {
-        if (limitBag.isPressed()) bagMotor.setPower(0);
-        if (limitSlide.isPressed()) slideMotor.setPower(0);
+        if (limitBag.isPressed()) {
+            bagMotor.setPower(0);
+            bagMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+        if (limitSlide.isPressed()) {
+            slideMotor.setPower(0);
+            slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
     }
 
     public void updateAngle() {
