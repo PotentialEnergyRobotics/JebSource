@@ -25,6 +25,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.potencode.Jeb;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -56,6 +57,9 @@ import java.util.Scanner;
 @Disabled
 public class CircleDriveGym extends LinearOpMode
 {
+    private Jeb jeb;
+    public double coneX;
+    public double coneY;
     OpenCvCamera camera;
 
     CirclePipelineGym circlePipelineGym = new CirclePipelineGym();
@@ -69,7 +73,7 @@ public class CircleDriveGym extends LinearOpMode
          * you should take a look at {@link InternalCamera1Example} or its
          * webcam counterpart, {@link WebcamExample} first.
          */
-
+        jeb.awake();
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "cam"), cameraMonitorViewId);
 
@@ -118,6 +122,9 @@ public class CircleDriveGym extends LinearOpMode
 
             telemetry.update();
 
+            coneX = (circlePipelineGym.point.x - 640*0.1);
+            coneY = (circlePipelineGym.point.y - 360)*0.1;
+            jeb.driveVelocity(coneX, coneY,0);
 
             /*
              * For the purposes of this sample, throttle ourselves to 10Hz loop to avoid burning

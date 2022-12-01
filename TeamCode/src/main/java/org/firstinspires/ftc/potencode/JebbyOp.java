@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.potencode.mechjeb.gym.CircleDriveGym;
+import org.firstinspires.ftc.potencode.mechjeb.gym.CirclePipelineGym;
 import org.firstinspires.ftc.potencode.utils.ButtonState;
 
 @TeleOp(name="JebbyOp")
@@ -74,6 +76,7 @@ public class JebbyOp extends OpMode {
                 driveX = 0;
             }
         }
+
         if (backButtonToggle.buttonState) {
             jeb.driveFOD(driveX, driveY, driveTurn);
         }
