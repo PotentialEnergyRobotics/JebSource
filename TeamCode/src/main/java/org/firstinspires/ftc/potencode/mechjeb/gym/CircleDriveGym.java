@@ -25,6 +25,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.potencode.Jeb;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -59,6 +60,11 @@ public class CircleDriveGym extends LinearOpMode
     OpenCvCamera camera;
 
     CirclePipelineGym circlePipelineGym = new CirclePipelineGym();
+    Jeb jeb;
+
+    private static final int CAMERA_WIDTH = 1920;
+    private static final int CAMERA_HEIGHT = 1080;
+    private static final Point CAMERA_CENTER = new Point(CAMERA_HEIGHT / 2, CAMERA_HEIGHT / 2);
 
     @Override
     public void runOpMode()
@@ -69,6 +75,10 @@ public class CircleDriveGym extends LinearOpMode
          * you should take a look at {@link InternalCamera1Example} or its
          * webcam counterpart, {@link WebcamExample} first.
          */
+        jeb = new Jeb(hardwareMap, telemetry);
+        jeb.awake();
+
+
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "cam"), cameraMonitorViewId);
@@ -81,7 +91,7 @@ public class CircleDriveGym extends LinearOpMode
             @Override
             public void onOpened()
             {
-                camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
+                camera.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -115,6 +125,9 @@ public class CircleDriveGym extends LinearOpMode
 
             telemetry.addData("Point", circlePipelineGym.point);
             telemetry.addData("Radius", circlePipelineGym.radius);
+
+            // todo calculate this with math :o using camera fov and distance from ground calculate amount of cm per pixel of image (TOUGH)
+            jeb.drivePower(CAMERA_CENTER.x - circlePipelineGym.point.x, CAMERA_CENTER.y - circlePipelineGym.point.y, 0);
 
             telemetry.update();
 
