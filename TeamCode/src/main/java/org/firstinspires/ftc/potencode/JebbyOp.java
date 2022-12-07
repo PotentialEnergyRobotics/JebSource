@@ -26,6 +26,7 @@ public class JebbyOp extends OpMode {
     public static double driveTurn;
 
     private ElapsedTime bagRuntime;
+    private ElapsedTime slideRuntime;
 
     @Override
     public void init() {
@@ -52,12 +53,16 @@ public class JebbyOp extends OpMode {
 
     @Override
     public void init_loop() {
-        if (!jeb.limitBag.isPressed() && !jeb.limitSlide.isPressed()) {
-            jeb.zeros();
+        if (!jeb.limitBag.isPressed()) {
+            jeb.BAGZero();
             bagRuntime.reset();
         }
         else {
             jeb.bagMotor.setPower(-Consts.DEFAULT_ARM_POWER);
+        }
+        if (!jeb.limitSlide.isPressed()) {
+            jeb.slideZero();
+            bagRuntime.reset();
         }
     }
 

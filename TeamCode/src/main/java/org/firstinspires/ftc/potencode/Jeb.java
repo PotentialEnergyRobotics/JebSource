@@ -83,11 +83,13 @@ public class Jeb {
         rightMotor.setDirection(DcMotorEx.Direction.FORWARD);
     }
 
-    public void zeros() {
+    public void BAGZero() {
         if (limitBag.isPressed()) {
             bagMotor.setPower(0);
             bagMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
+    }
+    public void slideZero() {
         if (limitSlide.isPressed()) {
             slideMotor.setPower(0);
             slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
