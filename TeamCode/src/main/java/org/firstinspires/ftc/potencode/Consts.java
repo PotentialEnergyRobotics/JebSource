@@ -15,13 +15,13 @@ public class Consts {
     public static final int MAX_ARM_SLIDE_POS = 0;
 
     public static final int PICKUP_ARM_POS = -200;
-    public static final int LOW_ARM_POS = -1445;
-    public static final int MID_ARM_POS = -2685;
-    public static final int HIGH_ARM_POS = -3925;
+    public static final int LOW_ARM_POS = -1250;
+    public static final int MID_ARM_POS = -2300;
+    public static final int HIGH_ARM_POS = -3350;
 
     public static final double POWER_PER_P = 0.01;
 
-    public static final int SLIDE_VEL = 500;
+    public static final int SLIDE_VEL = 1000;
 
     public static final double TICKS_PER_POWER = 2000;
     public static final double TICKS_PER_CM = 24.97406315350325;
