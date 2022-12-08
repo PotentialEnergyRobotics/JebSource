@@ -46,8 +46,8 @@ public class JebbyOp extends OpMode {
         rightBumperToggle = new ButtonState();
         leftBumperToggle = new ButtonState();
 
-        jeb.bagMotor.setPower(-Consts.DEFAULT_ARM_POWER);
-        jeb.slideMotor.setPower(Consts.DEFAULT_ARM_POWER);
+        //jeb.bagMotor.setPower(-Consts.DEFAULT_ARM_POWER);
+        //jeb.slideMotor.setPower(Consts.DEFAULT_ARM_POWER);
     }
 
     @Override
@@ -116,8 +116,8 @@ public class JebbyOp extends OpMode {
         if (jeb.limitBag.isPressed()) {
             jeb.bagMotor.setPower(0);
         }
-        if (!jeb.limitBag.isPressed() || gamepad2.left_stick_y < 0) {
-            jeb.bagMotor.setPower(-gamepad2.left_stick_y * Consts.TICKS_PER_POWER);
+        if (!jeb.limitBag.isPressed() || gamepad2.right_stick_y < 0) {
+            jeb.bagMotor.setPower(-Math.pow(gamepad2.right_stick_y, 3));
         }
 
 //        if ((jeb.armMotorB.getCurrentPosition() < Consts.MAX_ARM_B_POS || gamepad2.right_stick_y > 0) &&
@@ -130,8 +130,8 @@ public class JebbyOp extends OpMode {
         if (jeb.limitSlide.isPressed() || jeb.slideMotor.getCurrentPosition() >= Consts.MAX_ARM_BAG_POS) {
             jeb.slideMotor.setPower(0);
         }
-        if (!jeb.limitSlide.isPressed() || gamepad2.left_stick_y < 0 || (jeb.slideMotor.getCurrentPosition() >= Consts.MAX_ARM_BAG_POS && gamepad2.left_stick_y > 0)) {
-            jeb.slideMotor.setPower(-gamepad2.right_stick_y * Consts.TICKS_PER_POWER);
+        if (!jeb.limitSlide.isPressed() || gamepad2.left_stick_y > 0 /*|| (jeb.slideMotor.getCurrentPosition() >= Consts.MAX_ARM_BAG_POS && gamepad2.left_stick_y > 0)*/) {
+            jeb.slideMotor.setPower(-Math.pow(gamepad2.left_stick_y, 3));
         }
 
         if (gamepad2.dpad_down) jeb.slideMotor.setTargetPosition(Consts.LOW_ARM_POS);
@@ -144,6 +144,8 @@ public class JebbyOp extends OpMode {
         telemetry.addData("claw in", rightBumperToggle.buttonState);
         leftBumperToggle.update(gamepad2.left_bumper);
         telemetry.addData("claw on", leftBumperToggle.buttonState);
+
+
 
         if (leftBumperToggle.buttonState) {
             jeb.clawServoA.setPower(rightBumperToggle.buttonState ? -Consts.DEFAULT_ARM_POWER : Consts.DEFAULT_ARM_POWER);
