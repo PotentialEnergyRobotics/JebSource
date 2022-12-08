@@ -21,6 +21,8 @@ public class Consts {
 
     public static final double POWER_PER_P = 0.01;
 
+    public static final int SLIDE_VEL = 500;
+
     public static final double TICKS_PER_POWER = 2000;
     public static final double TICKS_PER_CM = 24.97406315350325;
     public static final double CM_PER_INCH = 2.54;

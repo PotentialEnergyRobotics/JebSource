@@ -57,12 +57,14 @@ import java.util.Scanner;
 @Disabled
 public class CircleDriveGym extends LinearOpMode
 {
-    private Jeb jeb;
-    public double coneX;
-    public double coneY;
     OpenCvCamera camera;
 
     CirclePipelineGym circlePipelineGym = new CirclePipelineGym();
+    Jeb jeb;
+
+    private static final int CAMERA_WIDTH = 1920;
+    private static final int CAMERA_HEIGHT = 1080;
+    private static final Point CAMERA_CENTER = new Point(CAMERA_HEIGHT / 2, CAMERA_HEIGHT / 2);
 
     @Override
     public void runOpMode()
@@ -73,7 +75,11 @@ public class CircleDriveGym extends LinearOpMode
          * you should take a look at {@link InternalCamera1Example} or its
          * webcam counterpart, {@link WebcamExample} first.
          */
+        jeb = new Jeb(hardwareMap, telemetry);
         jeb.awake();
+
+
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "cam"), cameraMonitorViewId);
 
@@ -85,7 +91,7 @@ public class CircleDriveGym extends LinearOpMode
             @Override
             public void onOpened()
             {
-                camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
+                camera.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT);
             }
 
             @Override
@@ -120,11 +126,11 @@ public class CircleDriveGym extends LinearOpMode
             telemetry.addData("Point", circlePipelineGym.point);
             telemetry.addData("Radius", circlePipelineGym.radius);
 
+            // todo calculate this with math :o using camera fov and distance from ground calculate amount of cm per pixel of image (TOUGH)
+            jeb.drivePower(CAMERA_CENTER.x - circlePipelineGym.point.x, CAMERA_CENTER.y - circlePipelineGym.point.y, 0);
+
             telemetry.update();
 
-            coneX = (circlePipelineGym.point.x - 640*0.1);
-            coneY = (circlePipelineGym.point.y - 360)*0.1;
-            jeb.driveVelocity(coneX, coneY,0);
 
             /*
              * For the purposes of this sample, throttle ourselves to 10Hz loop to avoid burning

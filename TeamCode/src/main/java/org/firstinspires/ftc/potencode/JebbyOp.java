@@ -25,8 +25,7 @@ public class JebbyOp extends OpMode {
     public static double driveY;
     public static double driveTurn;
 
-    private ElapsedTime bagRuntime;
-    private ElapsedTime slideRuntime;
+    //private ElapsedTime bagRuntime;
 
     @Override
     public void init() {
@@ -47,7 +46,7 @@ public class JebbyOp extends OpMode {
         rightBumperToggle = new ButtonState();
         leftBumperToggle = new ButtonState();
 
-        jeb.bagMotor.setPower(Consts.DEFAULT_ARM_POWER);
+        jeb.bagMotor.setPower(-Consts.DEFAULT_ARM_POWER);
         jeb.slideMotor.setPower(Consts.DEFAULT_ARM_POWER);
     }
 
@@ -55,15 +54,16 @@ public class JebbyOp extends OpMode {
     public void init_loop() {
         if (!jeb.limitBag.isPressed()) {
             jeb.BAGZero();
-            bagRuntime.reset();
         }
         else {
-            jeb.bagMotor.setPower(-Consts.DEFAULT_ARM_POWER);
+            //jeb.bagMotor.setPower(Consts.DEFAULT_ARM_POWER);
         }
-        if (!jeb.limitSlide.isPressed()) {
+        /*if (!jeb.limitSlide.isPressed()) {
             jeb.slideZero();
-            bagRuntime.reset();
         }
+        else {
+            jeb.slideMotor.setPower(-Consts.DEFAULT_ARM_POWER);
+        }*/
     }
 
     @Override
