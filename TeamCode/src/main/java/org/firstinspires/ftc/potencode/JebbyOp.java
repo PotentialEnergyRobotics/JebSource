@@ -3,6 +3,7 @@ package org.firstinspires.ftc.potencode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -21,9 +22,11 @@ public class JebbyOp extends OpMode {
 
     private double driveSpeedModifier;
 
-    public static double driveX;
-    public static double driveY;
-    public static double driveTurn;
+    private static double driveX;
+    private static double driveY;
+    private static double driveTurn;
+
+    private int targetArmPos = 0;
 
     //private ElapsedTime bagRuntime;
 
@@ -46,8 +49,8 @@ public class JebbyOp extends OpMode {
         rightBumperToggle = new ButtonState();
         leftBumperToggle = new ButtonState();
 
-        jeb.bagMotor.setPower(-Consts.DEFAULT_ARM_POWER);
-        jeb.slideMotor.setPower(Consts.DEFAULT_ARM_POWER);
+//        jeb.bagMotor.setPower(-Consts.DEFAULT_ARM_POWER);
+//        jeb.slideMotor.setPower(Consts.DEFAULT_ARM_POWER);
     }
 
     @Override
@@ -127,17 +130,27 @@ public class JebbyOp extends OpMode {
 //        else {
 //            jeb.armMotorB.setPower(0);
 //        }
-        if (jeb.limitSlide.isPressed() || jeb.slideMotor.getCurrentPosition() >= Consts.MAX_ARM_BAG_POS) {
-            jeb.slideMotor.setPower(0);
+
+        if (gamepad2.dpad_down) targetArmPos = Consts.PICKUP_ARM_POS;
+        else if (gamepad2.dpad_left) targetArmPos = Consts.LOW_ARM_POS;
+        else if (gamepad2.dpad_right) targetArmPos = Consts.MID_ARM_POS;
+//        else if (gamepad2.dpad_up) jeb.slideMotor.setTargetPosition(Consts.HIGH_ARM_POS);
+        else if (gamepad2.right_stick_y == 0 && targetArmPos == 0) targetArmPos = jeb.slideMotor.getCurrentPosition();
+
+        if (gamepad2.right_stick_y != 0) {
+            targetArmPos = 0;
+            jeb.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            if (jeb.limitSlide.isPressed() || jeb.slideMotor.getCurrentPosition() >= Consts.MAX_ARM_BAG_POS) {
+                jeb.slideMotor.setPower(0);
+            }
+            if ((!jeb.limitSlide.isPressed() || gamepad2.left_stick_y > 0) || (jeb.slideMotor.getCurrentPosition() >= Consts.MAX_ARM_BAG_POS && gamepad2.left_stick_y > 0)) {
+                jeb.slideMotor.setPower(-Math.pow(gamepad2.right_stick_y, 3));
+            }
         }
-        if (!jeb.limitSlide.isPressed() || gamepad2.left_stick_y < 0 || (jeb.slideMotor.getCurrentPosition() >= Consts.MAX_ARM_BAG_POS && gamepad2.left_stick_y > 0)) {
-            jeb.slideMotor.setPower(-gamepad2.right_stick_y * Consts.TICKS_PER_POWER);
+        else {
+            jeb.holdMotor(jeb.slideMotor, targetArmPos, Consts.SLIDE_VEL);
         }
 
-        if (gamepad2.dpad_down) jeb.slideMotor.setTargetPosition(Consts.LOW_ARM_POS);
-        else if (gamepad2.dpad_left) jeb.slideMotor.setTargetPosition(Consts.LOW_ARM_POS);
-        else if (gamepad2.dpad_right) jeb.slideMotor.setTargetPosition(Consts.MID_ARM_POS);
-//        else if (gamepad2.dpad_up) jeb.slideMotor.setTargetPosition(Consts.HIGH_ARM_POS);
 
         // claw
         rightBumperToggle.update(gamepad2.right_bumper);

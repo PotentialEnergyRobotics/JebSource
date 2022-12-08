@@ -142,6 +142,12 @@ public class Jeb {
         //backMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
+    public void holdMotor(DcMotorEx holdMotor, int pos, int vel) {
+        holdMotor.setTargetPosition(pos);
+        holdMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        holdMotor.setVelocity(vel);
+    }
+
     public void driveCentimeters(double distanceX, double distanceY, int velocity) { // cm, cm, cm/s
         int xTicks = (int)(distanceX * Consts.TICKS_PER_CM);
         int yTicks = (int)(distanceY * Consts.TICKS_PER_CM);
