@@ -11,7 +11,7 @@ public class Consts {
 
     public static final int MIN_ARM_BAG_POS = -7180;
     public static final int MAX_ARM_BAG_POS = 0;
-    public static final int MIN_ARM_SLIDE_POS = -3700;
+    public static final int MIN_ARM_SLIDE_POS = -3750;
     public static final int MAX_ARM_SLIDE_POS = 0;
 
     public static final int PICKUP_ARM_POS = -200;
