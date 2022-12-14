@@ -140,11 +140,12 @@ public class JebbyOp extends OpMode {
         if (gamepad2.right_stick_y != 0) {
             targetArmPos = 0;
             jeb.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            if (jeb.limitSlide.isPressed() || jeb.slideMotor.getCurrentPosition() >= Consts.MAX_ARM_SLIDE_POS) {
+            if (jeb.limitSlide.isPressed() || jeb.slideMotor.getCurrentPosition() <= Consts.MIN_ARM_SLIDE_POS) {
                 jeb.slideMotor.setPower(0);
             }
-            if (!jeb.limitSlide.isPressed() || gamepad2.right_stick_y > 0) {
-                jeb.slideMotor.setPower(-Math.pow(gamepad2.right_stick_y, 3) * Range.clip(1 - gamepad2.right_trigger, 0.1, 1));
+            if ((!jeb.limitSlide.isPressed() || gamepad2.right_stick_y < 0) &&
+                    (jeb.slideMotor.getCurrentPosition() > Consts.MIN_ARM_SLIDE_POS || gamepad2.right_stick_y > 0)) {
+                jeb.slideMotor.setPower(-Math.pow(gamepad2.right_stick_y, 1));
             }
         }
         else {
