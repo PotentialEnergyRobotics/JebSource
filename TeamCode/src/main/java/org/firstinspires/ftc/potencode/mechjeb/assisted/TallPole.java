@@ -54,8 +54,49 @@ public class TallPole extends OpMode {
             @Override
             public void init() {
                 runtime.reset();
+                telemetry.addData("status", "forward");
+                jeb.driveCentimeters(0, 10, Consts.MOVE_TPS);
+            }
+
+            @Override
+            public void run() {
+            }
+
+            @Override
+            public void cleanup() { }
+        });
+        motions.add(new Motion() {
+            @Override
+            public boolean isEnd() {
+                return runtime.seconds() > 3;
+            }
+
+            @Override
+            public void init() {
+                runtime.reset();
+                telemetry.addData("status", "turn 90");
+            }
+
+            @Override
+            public void run() {
+                jeb.gyroDrive(0, 0, -90);
+
+            }
+
+            @Override
+            public void cleanup() { }
+        });
+        motions.add(new Motion() {
+            @Override
+            public boolean isEnd() {
+                return runtime.seconds() > 3;
+            }
+
+            @Override
+            public void init() {
+                runtime.reset();
                 telemetry.addData("direction", "right");
-                jeb.driveCentimeters(0, -0.8 * Consts.CM_PER_TILE, Consts.MOVE_TPS);
+                jeb.driveCentimeters(0, 0.6 * Consts.CM_PER_TILE, Consts.MOVE_TPS);
             }
 
             @Override
@@ -75,7 +116,7 @@ public class TallPole extends OpMode {
             public void init() {
                 runtime.reset();
                 telemetry.addData("direction", "forward");
-                jeb.driveCentimeters(-0.8 * Consts.CM_PER_TILE, 0, Consts.MOVE_TPS);
+                jeb.driveCentimeters(1.1 * Consts.CM_PER_TILE, 0, Consts.MOVE_TPS);
             }
 
             @Override
@@ -96,6 +137,8 @@ public class TallPole extends OpMode {
                 runtime.reset();
                 telemetry.addData("status", "slide up");
                 jeb.slideMotor.setTargetPosition(Consts.HIGH_ARM_POS);
+                jeb.slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                jeb.slideMotor.setVelocity(Consts.MOVE_TPS);
             }
 
             @Override
@@ -115,7 +158,7 @@ public class TallPole extends OpMode {
             public void init() {
                 runtime.reset();
                 telemetry.addData("direction", "right pole edition");
-                jeb.driveCentimeters(0, -0.05 * Consts.CM_PER_TILE, Consts.MOVE_TPS);
+                jeb.driveCentimeters(0, -0.1 * Consts.CM_PER_TILE, Consts.MOVE_TPS);
             }
 
             @Override
@@ -158,8 +201,30 @@ public class TallPole extends OpMode {
             @Override
             public void init() {
                 runtime.reset();
-                telemetry.addData("direction", "backward pole edition");
-                jeb.driveCentimeters(0, 0.05 * Consts.CM_PER_TILE, Consts.MOVE_TPS);
+                telemetry.addData("direction", "left pole edition");
+                jeb.driveCentimeters(0, 0.1 * Consts.CM_PER_TILE, Consts.MOVE_TPS);
+            }
+
+            @Override
+            public void run() {
+            }
+
+            @Override
+            public void cleanup() { }
+        });
+        motions.add(new Motion() {
+            @Override
+            public boolean isEnd() {
+                return runtime.seconds() > 6;
+            }
+
+            @Override
+            public void init() {
+                runtime.reset();
+                telemetry.addData("status", "slide down");
+                jeb.slideMotor.setTargetPosition(Consts.LOW_ARM_POS);
+                jeb.slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                jeb.slideMotor.setVelocity(Consts.MOVE_TPS);
             }
 
             @Override
@@ -179,7 +244,7 @@ public class TallPole extends OpMode {
             public void init() {
                 runtime.reset();
                 telemetry.addData("direction", "backward");
-                jeb.driveCentimeters(0.8 * Consts.CM_PER_TILE, 0, Consts.MOVE_TPS);
+                jeb.driveCentimeters(-0.6 * Consts.CM_PER_TILE, 0, Consts.MOVE_TPS);
             }
 
             @Override
@@ -192,14 +257,14 @@ public class TallPole extends OpMode {
         motions.add(new Motion() {
             @Override
             public boolean isEnd() {
-                return runtime.seconds() > 3;
+                return runtime.seconds() > 3 || parkTarget == 2;
             }
 
             @Override
             public void init() {
                 runtime.reset();
                 telemetry.addData("status", "go to spot based on cone");
-                jeb.driveCentimeters(0, parkTarget == 0 ? 0.7 * Consts.CM_PER_TILE : -0.8 * Consts.CM_PER_TILE, Consts.MOVE_TPS);
+                jeb.driveCentimeters(0, parkTarget == 0 ? -0.7 * Consts.CM_PER_TILE : -1.6 * Consts.CM_PER_TILE, Consts.MOVE_TPS);
             }
 
             @Override

@@ -134,7 +134,7 @@ public class JebbyOp extends OpMode {
         if (gamepad2.dpad_down) targetArmPos = Consts.PICKUP_ARM_POS;
         else if (gamepad2.dpad_left) targetArmPos = Consts.LOW_ARM_POS;
         else if (gamepad2.dpad_right) targetArmPos = Consts.MID_ARM_POS;
-//        else if (gamepad2.dpad_up) jeb.slideMotor.setTargetPosition(Consts.HIGH_ARM_POS);
+        else if (gamepad2.dpad_up) jeb.slideMotor.setTargetPosition(Consts.HIGH_ARM_POS);
         else if (gamepad2.right_stick_y == 0 && targetArmPos == 0) targetArmPos = jeb.slideMotor.getCurrentPosition();
 
         if (gamepad2.right_stick_y != 0) {

@@ -109,8 +109,8 @@ public class Jeb {
     }
 
     public void rotateDegrees(double degrees) { // degrees not radians!!
-        // todo
-        return;
+        updateAngle();
+//        if (degrees < angle_d + 5 || angle_d - 5 > degrees)
     }
 
     private void trySwitchRunPosition(int vel) {
@@ -186,6 +186,7 @@ public class Jeb {
     }
 
     public void gyroDrive(double powerX, double powerY, double orientation) {
+        updateAngle();
         drive_direction = angle_d - orientation;
         frontMotor.setVelocity((powerX + (drive_direction * Consts.POWER_PER_P)) * Consts.TICKS_PER_POWER);
         leftMotor.setVelocity((powerY - (drive_direction * Consts.POWER_PER_P)) * Consts.TICKS_PER_POWER);
