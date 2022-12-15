@@ -154,13 +154,14 @@ public class JebbyOp extends OpMode {
 
         // claw
         rightBumperToggle.update(gamepad2.right_bumper);
-        telemetry.addData("claw in", rightBumperToggle.buttonState);
-        leftBumperToggle.update(gamepad2.left_bumper);
-        telemetry.addData("claw on", leftBumperToggle.buttonState);
 
-        if (leftBumperToggle.buttonState) {
-            jeb.clawServoA.setPower(rightBumperToggle.buttonState ? -Consts.DEFAULT_ARM_POWER : Consts.DEFAULT_ARM_POWER);
-            jeb.clawServoB.setPower(rightBumperToggle.buttonState ? Consts.DEFAULT_ARM_POWER : -Consts.DEFAULT_ARM_POWER);
+        if (gamepad2.left_bumper) {
+            jeb.clawServoA.setPower(-Consts.DEFAULT_ARM_POWER);
+            jeb.clawServoB.setPower(Consts.DEFAULT_ARM_POWER);
+        }
+        else if (gamepad2.left_trigger > 0.4) {
+            jeb.clawServoA.setPower(Consts.DEFAULT_ARM_POWER);
+            jeb.clawServoB.setPower(-Consts.DEFAULT_ARM_POWER);
         }
         else {
             jeb.clawServoA.setPower(0);
