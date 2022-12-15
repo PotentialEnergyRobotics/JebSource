@@ -79,9 +79,9 @@ public class JebbyOp extends OpMode {
         driveSpeedModifier = Range.clip(driveSpeedModifier,  Consts.MIN_DRIVE_POWER, 1);
         telemetry.addData("Move speed modifier", driveSpeedModifier);
 
-        driveX = Math.pow(-gamepad1.left_stick_x * driveSpeedModifier, 3);
-        driveY = Math.pow(-gamepad1.left_stick_y * driveSpeedModifier, 3);
-        driveTurn = Math.pow(gamepad1.right_stick_x * driveSpeedModifier, 3);
+        driveX = Math.pow(-gamepad1.left_stick_x, 3) * driveSpeedModifier;
+        driveY = Math.pow(-gamepad1.left_stick_y, 3) * driveSpeedModifier;
+        driveTurn = Math.pow(gamepad1.right_stick_x, 3) * driveSpeedModifier;
 
 
         if (gamepad1.x) {
@@ -140,7 +140,10 @@ public class JebbyOp extends OpMode {
         if (gamepad2.right_stick_y != 0) {
             targetArmPos = 0;
             jeb.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            if (jeb.limitSlide.isPressed() || jeb.slideMotor.getCurrentPosition() >= Consts.MAX_ARM_SLIDE_POS) {
+            if (jeb.limitSlide.isPressed() || jeb.slideMotor.getCurrentPosition() >= Consts.MIN_ARM_SLIDE_POS) {
+                jeb.slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                jeb.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
                 jeb.slideMotor.setPower(0);
             }
             if (!jeb.limitSlide.isPressed() || gamepad2.right_stick_y > 0) {
@@ -156,12 +159,12 @@ public class JebbyOp extends OpMode {
         rightBumperToggle.update(gamepad2.right_bumper);
 
         if (gamepad2.left_bumper) {
-            jeb.clawServoA.setPower(-Consts.DEFAULT_ARM_POWER);
-            jeb.clawServoB.setPower(Consts.DEFAULT_ARM_POWER);
-        }
-        else if (gamepad2.left_trigger > 0.4) {
             jeb.clawServoA.setPower(Consts.DEFAULT_ARM_POWER);
             jeb.clawServoB.setPower(-Consts.DEFAULT_ARM_POWER);
+        }
+        else if (gamepad2.left_trigger > 0.4) {
+            jeb.clawServoA.setPower(-Consts.DEFAULT_ARM_POWER);
+            jeb.clawServoB.setPower(Consts.DEFAULT_ARM_POWER);
         }
         else {
             jeb.clawServoA.setPower(0);
