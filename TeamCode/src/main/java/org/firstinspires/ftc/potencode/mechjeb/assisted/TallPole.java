@@ -199,7 +199,7 @@ public class TallPole extends OpMode {
             public void init() {
                 runtime.reset();
                 telemetry.addData("status", "go to spot based on cone");
-                jeb.driveCentimeters(0, -1, Consts.MOVE_TPS);
+                jeb.driveCentimeters(0, parkTarget == 0 ? 0.7 * Consts.CM_PER_TILE : -0.8 * Consts.CM_PER_TILE, Consts.MOVE_TPS);
             }
 
             @Override

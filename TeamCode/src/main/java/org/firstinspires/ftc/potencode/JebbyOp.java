@@ -144,7 +144,7 @@ public class JebbyOp extends OpMode {
                 jeb.slideMotor.setPower(0);
             }
             if (!jeb.limitSlide.isPressed() || gamepad2.right_stick_y > 0) {
-                jeb.slideMotor.setPower(-Math.pow(gamepad2.right_stick_y, 3));
+                jeb.slideMotor.setPower(-Math.pow(gamepad2.right_stick_y, 3) * Range.clip(1 - gamepad2.right_trigger, 0.1, 1));
             }
         }
         else {
