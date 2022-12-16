@@ -3,7 +3,6 @@ package org.firstinspires.ftc.potencode.mechjeb.assisted;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.potencode.Consts;
 import org.firstinspires.ftc.potencode.Jeb;
@@ -16,8 +15,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Autonomous(name = "Tall Pole")
-public class TallPole extends OpMode {
+@Autonomous(name = "Tall Pole 2")
+public class TallPole2 extends OpMode {
     private Jeb jeb;
 
     private VuforiaLocalizer vulo;
@@ -43,7 +42,7 @@ public class TallPole extends OpMode {
         tfod.loadModelFromFile(Consts.CONE_MODEL_FILE, Consts.CONE_LABELS);
         tfod.activate();
 
-        jeb.slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        jeb.slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         motions.add(new Motion() {
             @Override
@@ -55,52 +54,11 @@ public class TallPole extends OpMode {
             public void init() {
                 runtime.reset();
                 telemetry.addData("status", "forward");
-                jeb.driveCentimeters(0, 5, Consts.MOVE_TPS);
+                jeb.driveCentimeters(0, 2.2 * Consts.CM_PER_TILE, Consts.MOVE_TPS);
             }
 
             @Override
             public void run() {
-            }
-
-            @Override
-            public void cleanup() { }
-        });
-        motions.add(new Motion() {
-            @Override
-            public boolean isEnd() {
-                return runtime.seconds() > 3;
-            }
-
-            @Override
-            public void init() {
-                runtime.reset();
-                telemetry.addData("direction", "right");
-                jeb.driveCentimeters(-0.7 * Consts.CM_PER_TILE, 0, Consts.MOVE_TPS);
-            }
-
-            @Override
-            public void run() {
-            }
-
-            @Override
-            public void cleanup() { }
-        });
-        motions.add(new Motion() {
-            @Override
-            public boolean isEnd() {
-                return runtime.seconds() > 3;
-            }
-
-            @Override
-            public void init() {
-                runtime.reset();
-                telemetry.addData("direction", "forward");
-                jeb.driveCentimeters(0, 0.8 * Consts.CM_PER_TILE, Consts.MOVE_TPS);
-            }
-
-            @Override
-            public void run() {
-
             }
 
             @Override
@@ -137,28 +95,8 @@ public class TallPole extends OpMode {
             @Override
             public void init() {
                 runtime.reset();
-                telemetry.addData("direction", "right 2");
-                jeb.driveCentimeters(-0.4 * Consts.CM_PER_TILE, 0, Consts.MOVE_TPS);
-            }
-
-            @Override
-            public void run() {
-            }
-
-            @Override
-            public void cleanup() { }
-        });
-        motions.add(new Motion() {
-            @Override
-            public boolean isEnd() {
-                return runtime.seconds() > 1;
-            }
-
-            @Override
-            public void init() {
-                runtime.reset();
-                telemetry.addData("direction", "forward pole edition");
-                jeb.driveCentimeters(0, 0.05 * Consts.CM_PER_TILE, Consts.MOVE_TPS);
+                telemetry.addData("direction", "right");
+                jeb.driveCentimeters(0.6 * Consts.CM_PER_TILE, 0, Consts.MOVE_TPS);
             }
 
             @Override
@@ -172,28 +110,6 @@ public class TallPole extends OpMode {
             @Override
             public boolean isEnd() {
                 return runtime.seconds() > 3;
-            }
-
-            @Override
-            public void init() {
-                runtime.reset();
-                telemetry.addData("status", "slide up");
-                jeb.slideMotor.setTargetPosition(Consts.HIGH_ARM_POS + 350);
-                jeb.slideMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                jeb.slideMotor.setVelocity(Consts.MOVE_TPS);
-            }
-
-            @Override
-            public void run() {
-            }
-
-            @Override
-            public void cleanup() { }
-        });
-        motions.add(new Motion() {
-            @Override
-            public boolean isEnd() {
-                return runtime.seconds() > 1;
             }
 
             @Override
@@ -217,41 +133,14 @@ public class TallPole extends OpMode {
         motions.add(new Motion() {
             @Override
             public boolean isEnd() {
-                return runtime.seconds() > 3;
+                return runtime.seconds() > 3 || parkTarget == 2;
             }
 
             @Override
             public void init() {
                 runtime.reset();
-                telemetry.addData("direction", "backward pole edition");
-                jeb.driveCentimeters(0, -0.1 * Consts.CM_PER_TILE, Consts.MOVE_TPS);
-            }
-
-            @Override
-            public void run() {
-            }
-
-            @Override
-            public void cleanup() { }
-        });
-        motions.add(new Motion() {
-            @Override
-            public boolean isEnd() {
-                return runtime.seconds() > 3;
-            }
-
-            @Override
-            public void init() {
-                runtime.reset();
-                telemetry.addData("status", "go left to spot based on cone");
-                switch (parkTarget) {
-                    case 0:
-                        jeb.driveCentimeters(1.45 * Consts.CM_PER_TILE, 0, Consts.MOVE_TPS);
-                    case 1:
-                        jeb.driveCentimeters(.45 * Consts.CM_PER_TILE, 0, Consts.MOVE_TPS);
-                    case 2:
-                        jeb.driveCentimeters(.1, 0, Consts.MOVE_TPS);
-                }
+                telemetry.addData("status", "go to spot based on cone");
+                jeb.driveCentimeters(parkTarget == 0 ? -0.7 * Consts.CM_PER_TILE : -1.6 * Consts.CM_PER_TILE, 0, Consts.MOVE_TPS);
             }
 
             @Override
