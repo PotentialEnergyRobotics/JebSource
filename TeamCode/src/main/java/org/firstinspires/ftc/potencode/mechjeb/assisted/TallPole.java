@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.potencode.Consts;
 import org.firstinspires.ftc.potencode.Jeb;
@@ -30,6 +31,10 @@ public class TallPole extends OpMode {
     private int stage = 0;
     private ArrayList<Motion> motions = new ArrayList<>();
 
+    private boolean bagIsReset = false;
+    private boolean slideIsReset = false;
+    private ElapsedTime bagRuntime;
+
     @Override
     public void init() {
         jeb = new Jeb(hardwareMap, telemetry);
@@ -45,6 +50,10 @@ public class TallPole extends OpMode {
 
         jeb.slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
+        bagRuntime = new ElapsedTime();
+        if (!jeb.limitBag.isPressed()) jeb.bagMotor.setPower(-Consts.DEFAULT_ARM_POWER);
+
+        // region Motions
         motions.add(new Motion() {
             @Override
             public boolean isEnd() {
@@ -283,10 +292,31 @@ public class TallPole extends OpMode {
             @Override
             public void cleanup() { }
         });
+        //endregion
     }
 
     @Override
     public void init_loop() {
+        if (jeb.limitBag.isPressed() && !bagIsReset) {
+            bagIsReset = true;
+            jeb.bagMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            jeb.bagMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            jeb.bagMotor.setPower(Consts.DEFAULT_ARM_POWER);
+            bagRuntime.reset();
+        }
+
+        if (bagRuntime.milliseconds() > 6000) {
+            jeb.bagMotor.setPower(0);
+            if (bagRuntime.milliseconds() > 8000) {
+                if (!jeb.limitSlide.isPressed() && !slideIsReset) jeb.slideMotor.setPower(Consts.DEFAULT_ARM_POWER);
+                if (jeb.limitSlide.isPressed() && !slideIsReset) {
+                    slideIsReset = true;
+                    jeb.slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    jeb.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                }
+            }
+        }
+
         if (tfod != null) {
             List<Recognition> recognitions = tfod.getRecognitions();
             telemetry.addData("Objects Detected", recognitions.size());
