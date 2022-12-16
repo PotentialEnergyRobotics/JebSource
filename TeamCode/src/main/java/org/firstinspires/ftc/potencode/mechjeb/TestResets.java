@@ -13,7 +13,6 @@ public class TestResets extends OpMode {
     private Jeb jeb;
 
     private boolean bagIsReset = false;
-    private boolean slideIsReset = false;
 
     private ElapsedTime runtime;
 
@@ -46,15 +45,6 @@ public class TestResets extends OpMode {
 
         if (runtime.milliseconds() > 6000) {
             jeb.bagMotor.setPower(0);
-            if (runtime.milliseconds() > 8000) {
-                if (!jeb.limitSlide.isPressed() && !slideIsReset) jeb.slideMotor.setPower(Consts.DEFAULT_ARM_POWER);
-                if (jeb.limitSlide.isPressed() && !slideIsReset) {
-                    slideIsReset = true;
-                    jeb.slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    jeb.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                }
-            }
-
         }
 
     }
