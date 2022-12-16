@@ -49,24 +49,11 @@ public class JebbyOp extends OpMode {
         rightBumperToggle = new ButtonState();
         leftBumperToggle = new ButtonState();
 
-//        jeb.bagMotor.setPower(-Consts.DEFAULT_ARM_POWER);
-//        jeb.slideMotor.setPower(Consts.DEFAULT_ARM_POWER);
     }
 
     @Override
     public void init_loop() {
-        if (!jeb.limitBag.isPressed()) {
-            jeb.BAGZero();
-        }
-        else {
-            //jeb.bagMotor.setPower(Consts.DEFAULT_ARM_POWER);
-        }
-        /*if (!jeb.limitSlide.isPressed()) {
-            jeb.slideZero();
-        }
-        else {
-            jeb.slideMotor.setPower(-Consts.DEFAULT_ARM_POWER);
-        }*/
+
     }
 
     @Override
@@ -119,7 +106,7 @@ public class JebbyOp extends OpMode {
         if (jeb.limitBag.isPressed()) {
             jeb.bagMotor.setPower(0);
         }
-        if (!jeb.limitBag.isPressed() || gamepad2.left_stick_y < 0) {
+        if (!jeb.limitBag.isPressed() || gamepad2.left_stick_y < 0 && gamepad2.a) {
             jeb.bagMotor.setPower(-gamepad2.left_stick_y);
         }
 
@@ -166,11 +153,11 @@ public class JebbyOp extends OpMode {
         // claw
         rightBumperToggle.update(gamepad2.right_bumper);
 
-        if (gamepad2.left_bumper) {
+        if (gamepad2.left_bumper || gamepad2.left_bumper) {
             jeb.clawServoA.setPower(Consts.DEFAULT_ARM_POWER);
             jeb.clawServoB.setPower(-Consts.DEFAULT_ARM_POWER);
         }
-        else if (gamepad2.left_trigger > 0.4) {
+        else if (gamepad2.left_trigger > 0.4 || gamepad2.right_trigger > 0.4) {
             jeb.clawServoA.setPower(-Consts.DEFAULT_ARM_POWER);
             jeb.clawServoB.setPower(Consts.DEFAULT_ARM_POWER);
         }
