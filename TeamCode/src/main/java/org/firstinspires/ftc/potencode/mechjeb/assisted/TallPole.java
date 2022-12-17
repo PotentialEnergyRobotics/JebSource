@@ -32,7 +32,6 @@ public class TallPole extends OpMode {
     private ArrayList<Motion> motions = new ArrayList<>();
 
     private boolean bagIsReset = false;
-    private boolean slideIsReset = false;
     private ElapsedTime bagRuntime;
 
     @Override
@@ -305,16 +304,8 @@ public class TallPole extends OpMode {
             bagRuntime.reset();
         }
 
-        if (bagRuntime.milliseconds() > 6000) {
+        if (bagRuntime.milliseconds() > 6000 && bagIsReset) {
             jeb.bagMotor.setPower(0);
-            if (bagRuntime.milliseconds() > 8000) {
-                if (!jeb.limitSlide.isPressed() && !slideIsReset) jeb.slideMotor.setPower(Consts.DEFAULT_ARM_POWER);
-                if (jeb.limitSlide.isPressed() && !slideIsReset) {
-                    slideIsReset = true;
-                    jeb.slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    jeb.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                }
-            }
         }
 
         if (tfod != null) {

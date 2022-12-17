@@ -43,7 +43,7 @@ public class TestResets extends OpMode {
             runtime.reset();
         }
 
-        if (runtime.milliseconds() > 6000) {
+        if (runtime.milliseconds() > 6000 && bagIsReset) {
             jeb.bagMotor.setPower(0);
         }
 

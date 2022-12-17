@@ -15,9 +15,9 @@ public class Consts {
     public static final int MAX_ARM_SLIDE_POS = 0;
 
     public static final int PICKUP_ARM_POS = -200;
-    public static final int LOW_ARM_POS = -1250;
-    public static final int MID_ARM_POS = -2300;
-    public static final int HIGH_ARM_POS = -3350;
+    public static final int LOW_ARM_POS = -1120;
+    public static final int MID_ARM_POS = -2110;
+    public static final int HIGH_ARM_POS = -3130;
 
     public static final double POWER_PER_P = 0.01;
 
