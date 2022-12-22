@@ -138,10 +138,10 @@ public class JebbyOp extends OpMode {
             }
             if ((!jeb.limitSlide.isPressed() || gamepad2.right_stick_y > 0) &&
                     (jeb.slideMotor.getCurrentPosition() > Consts.MIN_ARM_SLIDE_POS || gamepad2.right_stick_y < 0)) {
-                if (jeb.slideMotor.getCurrentPosition() < Consts.PICKUP_ARM_POS) {
+                if (gamepad2.right_stick_y > 0) {
                     jeb.slideMotor.setPower(Math.pow(gamepad2.right_stick_y, 1));
                 } else {
-                    jeb.slideMotor.setPower(Math.pow(gamepad2.right_stick_y, 1)*0.25);
+                    jeb.slideMotor.setPower(Math.pow(gamepad2.right_stick_y, 1)*0.5);
                 }
             }
         }
