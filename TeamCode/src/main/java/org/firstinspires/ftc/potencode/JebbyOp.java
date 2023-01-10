@@ -67,13 +67,17 @@ public class JebbyOp extends OpMode {
         backButtonToggle.update(gamepad1.back);
         telemetry.addData("FOD", backButtonToggle.buttonState);
 
-        driveSpeedModifier = Consts.DEFAULT_DRIVE_POWER + gamepad1.left_trigger * (1 - Consts.DEFAULT_DRIVE_POWER) - gamepad1.right_trigger * Consts.DEFAULT_DRIVE_POWER;
+        driveSpeedModifier = Consts.DEFAULT_DRIVE_POWER - gamepad1.right_trigger * Consts.DEFAULT_DRIVE_POWER;
+        // Allow turbo mode only if slide is not too high
+        if (jeb.slideMotor.getCurrentPosition() > Consts.MID_ARM_POS) {
+            driveSpeedModifier += gamepad1.left_trigger * (1 - Consts.DEFAULT_DRIVE_POWER);
+        }
         driveSpeedModifier = Range.clip(driveSpeedModifier,  Consts.MIN_DRIVE_POWER, 1);
         telemetry.addData("Move speed modifier", driveSpeedModifier);
 
         driveX = Math.pow(-gamepad1.left_stick_x, 3) * driveSpeedModifier;
         driveY = Math.pow(-gamepad1.left_stick_y, 3) * driveSpeedModifier;
-        driveTurn = Math.pow(gamepad1.right_stick_x, 3) * driveSpeedModifier;
+        driveTurn = -Math.pow(gamepad1.right_stick_x, 3) * driveSpeedModifier;
 
 
         if (gamepad1.x) {

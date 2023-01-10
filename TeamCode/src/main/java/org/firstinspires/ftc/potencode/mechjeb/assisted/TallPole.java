@@ -50,7 +50,7 @@ public class TallPole extends OpMode {
         jeb.slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         bagRuntime = new ElapsedTime();
-        if (!jeb.limitBag.isPressed()) jeb.bagMotor.setPower(-Consts.DEFAULT_ARM_POWER);
+        // if (!jeb.limitBag.isPressed()) jeb.bagMotor.setPower(-Consts.DEFAULT_ARM_POWER);
 
         // region Motions
         motions.add(new Motion() {
@@ -296,7 +296,7 @@ public class TallPole extends OpMode {
 
     @Override
     public void init_loop() {
-        if (jeb.limitBag.isPressed() && !bagIsReset) {
+        /*if (jeb.limitBag.isPressed() && !bagIsReset) {
             bagIsReset = true;
             jeb.bagMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             jeb.bagMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -306,7 +306,8 @@ public class TallPole extends OpMode {
 
         if (bagRuntime.milliseconds() > 6000 && bagIsReset) {
             jeb.bagMotor.setPower(0);
-        }
+        }*/
+        
 
         if (tfod != null) {
             List<Recognition> recognitions = tfod.getRecognitions();

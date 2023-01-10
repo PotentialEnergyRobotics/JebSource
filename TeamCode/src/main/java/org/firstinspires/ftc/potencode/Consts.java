@@ -21,9 +21,9 @@ public class Consts {
 
     public static final double POWER_PER_P = 0.01;
 
-    public static final int SLIDE_VEL = 1000;
+    public static final int SLIDE_VEL = 1200;
 
-    public static final double TICKS_PER_POWER = 2000;
+    public static final double TICKS_PER_POWER = 537.7 * 312 / 60; // ppr * rpm / (seconds per min)
     public static final double TICKS_PER_CM = 24.97406315350325;
     public static final double CM_PER_INCH = 2.54;
     public static final double CM_PER_TILE = 60.325;
