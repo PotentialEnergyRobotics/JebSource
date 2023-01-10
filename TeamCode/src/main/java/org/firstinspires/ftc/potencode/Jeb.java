@@ -163,6 +163,7 @@ public class Jeb {
 
     public void driveFOD(double powerX, double powerY, double turnPower) {
         updateAngle();
+
         double powerXFOD = powerX * Math.cos(current_angle_r) - powerY * Math.sin(current_angle_r);
         double powerYFOD = powerX * Math.sin(current_angle_r) + powerY * Math.cos(current_angle_r);
         frontMotor.setVelocity((powerXFOD + turnPower) * Consts.TICKS_PER_POWER);
@@ -192,6 +193,20 @@ public class Jeb {
         leftMotor.setVelocity((powerY - (drive_direction * Consts.POWER_PER_P)) * Consts.TICKS_PER_POWER);
         backMotor.setVelocity((powerX - (drive_direction * Consts.POWER_PER_P)) * Consts.TICKS_PER_POWER);
         rightMotor.setVelocity((powerY + (drive_direction * Consts.POWER_PER_P)) * Consts.TICKS_PER_POWER);
+    }
+
+    public void gyroFODDrive(double angle, double velocity, double orientation) {
+        updateAngle();
+        drive_direction = angle_d - orientation;
+        double zeroedAngle = angle + 90;
+        double anglePowerX = Math.cos(zeroedAngle) * velocity;
+        double anglePowerY = Math.sin(zeroedAngle) * velocity;
+        double powerXFOD = anglePowerX * Math.cos(current_angle_r) - anglePowerY * Math.sin(current_angle_r);
+        double powerYFOD = anglePowerX * Math.sin(current_angle_r) + anglePowerY * Math.cos(current_angle_r);
+        frontMotor.setVelocity(powerXFOD + (drive_direction * Consts.POWER_PER_P) * Consts.TICKS_PER_POWER);
+        leftMotor.setVelocity(powerYFOD - (drive_direction * Consts.POWER_PER_P) * Consts.TICKS_PER_POWER);
+        backMotor.setVelocity(powerXFOD - (drive_direction * Consts.POWER_PER_P) * Consts.TICKS_PER_POWER);
+        rightMotor.setVelocity(powerYFOD + (drive_direction * Consts.POWER_PER_P) * Consts.TICKS_PER_POWER);
     }
 
     public VuforiaLocalizer initVuforia(CameraName ...webcams) {
