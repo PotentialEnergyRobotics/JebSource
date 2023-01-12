@@ -88,7 +88,7 @@ public class ConeFaceAll2 extends OpMode {
             public void cleanup() { }
         });
         bagRuntime = new ElapsedTime();
-        if (!jeb.limitBag.isPressed()) jeb.bagMotor.setPower(-Consts.DEFAULT_ARM_POWER);
+//        if (!jeb.limitBag.isPressed()) jeb.bagMotor.setPower(-Consts.DEFAULT_ARM_POWER);
     }
 
     @Override
@@ -114,14 +114,14 @@ public class ConeFaceAll2 extends OpMode {
         }
         if (jeb.limitBag.isPressed() && !bagIsReset) {
             bagIsReset = true;
-            jeb.bagMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            jeb.bagMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            jeb.bagMotor.setPower(Consts.DEFAULT_ARM_POWER);
+//            jeb.bagMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            jeb.bagMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//            jeb.bagMotor.setPower(Consts.DEFAULT_ARM_POWER);
             bagRuntime.reset();
         }
 
         if (bagRuntime.milliseconds() > 6000 && bagIsReset) {
-            jeb.bagMotor.setPower(0);
+//            jeb.bagMotor.setPower(0);
         }
     }
 

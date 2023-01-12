@@ -44,9 +44,9 @@ public class JebbyOp extends OpMode {
         jeb.rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         jeb.frontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         jeb.backMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        jeb.bagMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        jeb.bagMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         jeb.slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        jeb.bagMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        jeb.bagMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         jeb.slideMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         backButtonToggle = new ButtonState();
@@ -100,7 +100,7 @@ public class JebbyOp extends OpMode {
 
         // arm
 
-        telemetry.addData("gear pos", jeb.bagMotor.getCurrentPosition());
+//        telemetry.addData("gear pos", jeb.bagMotor.getCurrentPosition());
         telemetry.addData("slide pos", jeb.slideMotor.getCurrentPosition());
         telemetry.addData("limit", jeb.limitBag.isPressed());
 
@@ -119,10 +119,10 @@ public class JebbyOp extends OpMode {
 //        }
 
         if (jeb.limitBag.isPressed()) {
-            jeb.bagMotor.setPower(0);
+//            jeb.bagMotor.setPower(0);
         }
         if ((!jeb.limitBag.isPressed() || gamepad2.right_stick_y < 0) && gamepad2.x) {
-            jeb.bagMotor.setPower(-gamepad2.right_stick_y);
+//            jeb.bagMotor.setPower(-gamepad2.right_stick_y);
         }
 
 //        if ((jeb.armMotorB.getCurrentPosition() < Consts.MAX_ARM_B_POS || gamepad2.right_stick_y > 0) &&
@@ -170,16 +170,16 @@ public class JebbyOp extends OpMode {
         rightBumperToggle.update(gamepad2.right_bumper);
 
         if (gamepad2.left_bumper || gamepad2.right_bumper) {
-            jeb.clawServoA.setPower(Consts.DEFAULT_ARM_POWER);
-            jeb.clawServoB.setPower(-Consts.DEFAULT_ARM_POWER);
+//            jeb.clawServoA.setPower(Consts.DEFAULT_ARM_POWER);
+//            jeb.clawServoB.setPower(-Consts.DEFAULT_ARM_POWER);
         }
         else if (gamepad2.left_trigger > 0.4 || gamepad2.right_trigger > 0.4) {
-            jeb.clawServoA.setPower(-Consts.DEFAULT_ARM_POWER);
-            jeb.clawServoB.setPower(Consts.DEFAULT_ARM_POWER);
+//            jeb.clawServoA.setPower(-Consts.DEFAULT_ARM_POWER);
+//            jeb.clawServoB.setPower(Consts.DEFAULT_ARM_POWER);
         }
         else {
-            jeb.clawServoA.setPower(0);
-            jeb.clawServoB.setPower(0);
+//            jeb.clawServoA.setPower(0);
+//            jeb.clawServoB.setPower(0);
         }
 
     }

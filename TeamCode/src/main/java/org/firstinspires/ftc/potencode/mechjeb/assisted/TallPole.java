@@ -208,8 +208,8 @@ public class TallPole extends OpMode {
             public void init() {
                 runtime.reset();
                 telemetry.addData("status", "release");
-                jeb.clawServoA.setPower(-Consts.DEFAULT_ARM_POWER);
-                jeb.clawServoB.setPower(Consts.DEFAULT_ARM_POWER);
+//                jeb.clawServoA.setPower(-Consts.DEFAULT_ARM_POWER);
+//                jeb.clawServoB.setPower(Consts.DEFAULT_ARM_POWER);
             }
 
             @Override
@@ -218,8 +218,8 @@ public class TallPole extends OpMode {
 
             @Override
             public void cleanup() {
-                jeb.clawServoA.setPower(0);
-                jeb.clawServoB.setPower(0);
+//                jeb.clawServoA.setPower(0);
+//                jeb.clawServoB.setPower(0);
             }
         });
         motions.add(new Motion() {

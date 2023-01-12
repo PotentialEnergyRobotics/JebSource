@@ -1,12 +1,16 @@
 package org.firstinspires.ftc.potencode;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.potencode.mechjeb.gym.Color;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraName;
@@ -29,13 +33,17 @@ public class Jeb {
     public DcMotorEx leftMotor;
     public DcMotorEx backMotor;
 
-    public DcMotorEx bagMotor;
+    //public DcMotorEx bagMotor;
     public DcMotorEx slideMotor;
-    public CRServo clawServoA;
-    public CRServo clawServoB;
+    //public CRServo clawServoA;
+    //public CRServo clawServoB;
 
     public TouchSensor limitBag;
     public TouchSensor limitSlide;
+
+    public RevColorSensorV3 intakeColor;
+
+    public DistanceSensor distanceSensorLeft;
 
     private double angle_r;
     private double angle_d;
@@ -69,13 +77,20 @@ public class Jeb {
         leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         backMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        bagMotor = hardwareMap.get(DcMotorEx.class, "bag");
+        //bagMotor = hardwareMap.get(DcMotorEx.class, "bag");
         slideMotor = hardwareMap.get(DcMotorEx.class, "slide");
-        clawServoA = hardwareMap.get(CRServo.class, "claw A");
-        clawServoB = hardwareMap.get(CRServo.class, "claw B");
+        //clawServoA = hardwareMap.get(CRServo.class, "claw A");
+        //clawServoB = hardwareMap.get(CRServo.class, "claw B");
 
         limitBag = hardwareMap.get(TouchSensor.class, "bag");
         limitSlide = hardwareMap.get(TouchSensor.class, "slide");
+
+        intakeColor = hardwareMap.get(RevColorSensorV3.class, "color");
+
+        distanceSensorLeft = hardwareMap.get(DistanceSensor.class, "left");
+//        distanceSensorLeft = hardwareMap.get(DistanceSensor.class, "left");
+//        distanceSensorLeft = hardwareMap.get(DistanceSensor.class, "left");
+//        distanceSensorLeft = hardwareMap.get(DistanceSensor.class, "left");
 
         frontMotor.setDirection(DcMotorEx.Direction.FORWARD);
         backMotor.setDirection(DcMotorEx.Direction.REVERSE);
@@ -83,12 +98,12 @@ public class Jeb {
         rightMotor.setDirection(DcMotorEx.Direction.FORWARD);
     }
 
-    public void BAGZero() {
+    /*public void BAGZero() {
         if (limitBag.isPressed()) {
             bagMotor.setPower(0);
             bagMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         }
-    }
+    }*/
     public void slideZero() {
         if (limitSlide.isPressed()) {
             slideMotor.setPower(0);

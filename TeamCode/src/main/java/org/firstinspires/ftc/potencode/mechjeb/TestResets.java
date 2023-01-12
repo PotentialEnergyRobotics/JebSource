@@ -30,28 +30,28 @@ public class TestResets extends OpMode {
         // reset slide to encoder
         // safety checks??
 
-        if (!jeb.limitBag.isPressed()) jeb.bagMotor.setPower(-Consts.DEFAULT_ARM_POWER);
+//        if (!jeb.limitBag.isPressed()) jeb.bagMotor.setPower(-Consts.DEFAULT_ARM_POWER);
     }
 
     @Override
     public void init_loop() {
         if (jeb.limitBag.isPressed() && !bagIsReset) {
             bagIsReset = true;
-            jeb.bagMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            jeb.bagMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            jeb.bagMotor.setPower(Consts.DEFAULT_ARM_POWER);
+//            jeb.bagMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            jeb.bagMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//            jeb.bagMotor.setPower(Consts.DEFAULT_ARM_POWER);
             runtime.reset();
         }
 
         if (runtime.milliseconds() > 6000 && bagIsReset) {
-            jeb.bagMotor.setPower(0);
+//            jeb.bagMotor.setPower(0);
         }
 
     }
 
     @Override
     public void loop() {
-        if (jeb.limitBag.isPressed()) jeb.bagMotor.setPower(0);
-        else if (!jeb.limitBag.isPressed() || gamepad2.left_stick_y < 0) jeb.bagMotor.setPower(gamepad2.left_stick_y);
+//        if (jeb.limitBag.isPressed()) jeb.bagMotor.setPower(0);
+//        else if (!jeb.limitBag.isPressed() || gamepad2.left_stick_y < 0) jeb.bagMotor.setPower(gamepad2.left_stick_y);
     }
 }
