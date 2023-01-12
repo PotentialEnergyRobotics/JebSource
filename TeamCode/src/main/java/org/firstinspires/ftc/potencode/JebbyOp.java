@@ -105,7 +105,7 @@ public class JebbyOp extends OpMode {
         telemetry.addData("limit", jeb.limitBag.isPressed());
 
         gamepad2y.update(gamepad2.y);
-        slideY = gamepad2.left_stick_y;
+        slideY = -gamepad2.left_stick_y;
         if (gamepad2y.buttonState) {
             slideY = slideY * -1;
         }
@@ -151,11 +151,12 @@ public class JebbyOp extends OpMode {
             if (jeb.slideMotor.getCurrentPosition() <= Consts.MIN_ARM_SLIDE_POS) {
                 jeb.slideMotor.setPower(0);
             }
-            if ((!jeb.limitSlide.isPressed() || -slideY > 0) &&
-                    (jeb.slideMotor.getCurrentPosition() > Consts.MIN_ARM_SLIDE_POS || -slideY < 0)) {
-                if (jeb.slideMotor.getCurrentPosition() < Consts.PICKUP_ARM_POS || -slideY > 0) {
+            if ((!jeb.limitSlide.isPressed() || slideY > 0) &&
+                    (jeb.slideMotor.getCurrentPosition() > Consts.MIN_ARM_SLIDE_POS || slideY < 0)) {
+                if (jeb.slideMotor.getCurrentPosition() < Consts.PICKUP_ARM_POS || slideY > 0) {
                     jeb.slideMotor.setPower(Math.pow(slideY, 1));
                 } else {
+//                    jeb.slideMotor.setPower(Math.pow(slideY, 1));
                     jeb.slideMotor.setPower(Math.pow(slideY, 1)*0.25);
                 }
             }
